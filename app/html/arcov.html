@@ -1,0 +1,34 @@
+<html>
+ <head>
+	<meta charset="UTF-8">
+   <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
+   <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+ </head>
+ <body>
+	
+	<a-scene id="ascene"  debug arjs>
+		<a-sky color="#f0f0f0" ></a-sky>
+		<a-box position="0 0 -20" color="tomato"></a-box>
+		<a-marker preset='hiro'>
+		  <!-- here define the content to display on top of the marker -->
+		  <a-gltf-model id="ioc" src="../assets/ioc/ioc-col.gltf" 
+				scale="20 20 20" 				
+				rotation="0 0 0">
+			</a-gltf-model>
+		</a-marker>
+		<a-marker preset='kanji'>
+		  <!-- here define the content to display on top of the marker -->
+		  <a-gltf-model id="lw" src="../assets/little_wizard/scene.gltf" 
+				scale="0.1 0.1 0.1" 				
+				rotation="0 0 0">
+			</a-gltf-model>
+		</a-marker>
+		<!-- define a simple camera -->
+		<a-entity camera></a-entity>
+   </a-scene>
+   <script >
+		
+	
+   </script>
+ </body>
+</html>
