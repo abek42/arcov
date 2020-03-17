@@ -1,34 +1,171 @@
 <html>
  <head>
 	<meta charset="UTF-8">
-   <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
-   <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+	
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
+	<script src="https://unpkg.com/aframe-geometry-merger-component/dist/aframe-geometry-merger-component.min.js"></script>
+	<!--script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script-->
+   
+	<script src="../js/covid19.js"></script>
+	<script src="../js/gameLogic.js"></script>
+	<script>
+		window.onerror = function(message, source, lineno, colno, error) { alert([message,source,lineno,colno,error].join("\n"));}
+		window.addEventListener('error', function(event) { alert(event); })		
+	</script>
  </head>
  <body>
 	
-	<a-scene id="ascene"  debug arjs>
-		<a-sky color="#f0f0f0" ></a-sky>
-		<a-box position="0 0 -20" color="tomato"></a-box>
-		<a-marker preset='hiro'>
-		  <!-- here define the content to display on top of the marker -->
-		  <a-gltf-model id="ioc" src="../assets/ioc/ioc-col.gltf" 
-				scale="20 20 20" 				
-				rotation="0 0 0">
-			</a-gltf-model>
-		</a-marker>
-		<a-marker preset='kanji'>
-		  <!-- here define the content to display on top of the marker -->
-		  <a-gltf-model id="lw" src="../assets/little_wizard/scene.gltf" 
-				scale="0.1 0.1 0.1" 				
-				rotation="0 0 0">
-			</a-gltf-model>
-		</a-marker>
+	<a-scene id="ascene" vr-mode-ui="enabled: false"background="color: #f0f0f0"  stats>
+		<a-assets>
+			<a-mixin rotation="90 0 0"
+				geometry="primitive:torus;buffer: false;segments-radial:6;segments-tubular:8;radius:0.5" face-colors="color: coral" id="ator">
+			</a-mixin>
+			<a-mixin
+				geometry="primitive:cylinder;buffer:false;segments-radial:6;radius:0.25;height:2.3" face-colors="color:mediumslateblue" id="acyl">
+			</a-mixin>
+			<a-mixin
+				geometry="primitive:sphere;buffer:false;segments-height:9;segments-width:9;radius:5;" face-colors="color:mediumvioletred" id="asph">
+			</a-mixin>
+			<a-mixin geometry-merger="preserveOriginal: false" material="vertexColors: face" id="merge">
+			</a-mixin>
+			<a-mixin 
+				animation__rxyz="property:rotation;from:0 0 0;to:360 360 360;dur:5000;loop:true;dir:normal;easing:linear;" id="Rxyz">
+			</a-mixin>
+			<a-mixin 
+				animation__ry="property:rotation.y;from:0;to:360;dur:6000;loop:true;dir:normal;easing:linear;" id="Ry">
+			</a-mixin>
+			<a-mixin 
+				animation__x="property:object3D.position.x;to:20;loop:1;dur:5000;easing:easeInOutSine;startEvents:floatX;" id="fx"
+			>
+			</a-mixin>
+			<a-mixin 
+				animation__y="property:object3D.position.y;to:15;loop:1;dur:8000;easing:easeInOutSine;startEvents:floatY;" id="fy"
+			>
+			</a-mixin>
+		</a-assets>
+		<!--a-marker preset='hiro'>
+		  <!-- here define the content to display on top of the marker -- >
+		  <a-sphere color="tomato" radius="0.2"></a-sphere>
+		</a-marker-->
+	
 		<!-- define a simple camera -->
-		<a-entity camera></a-entity>
+		<a-entity camera position="0 0 0">
+			<a-entity id="game_washHands">
+			<!-- debug planes -->
+				<a-plane color="#8C8" height="40" width="2" rotation="0 -90 0" position="-22.5 0 -20" material="side: double;"></a-plane>
+				<a-plane color="#8C8" height="40" width="2" rotation="0 -90 0" position=" 22.5 0 -20" material="side: double;"></a-plane>
+				<a-plane color="#8C8" height="2" width="40" rotation="-90 0 0" position=" 0  -17 -20" material="side: double;"></a-plane>
+				<a-plane color="#8C8" height="2" width="40" rotation="-90 0 0" position=" 0   17 -20" material="side: double;"></a-plane>
+			
+				<!-- nest all the entities that float within it's range-->
+				<a-entity id="cov00" class="vParticle" position="0 0 -20" mixin="fx fy"		>
+				<a-entity class="cov" mixin="merge Rxyz" scale="0.2 0.2 0.2">
+					<a-entity class="capsideNStalk" rotation="0 0 0" mixin="merge">
+						<a-entity mixin="ator" position="0 7 0"></a-entity>
+						<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						<a-entity mixin="ator" position="0 -7 0"></a-entity>
+						<a-entity mixin="acyl" position="0 -6 0"></a-entity>
+						<a-entity mixin="asph" ></a-entity>
+					</a-entity>
+					<a-entity class="stalks" rotation="0 -1 0" mixin="merge">
+						<a-entity class="stalk" rotation="2 8 46" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="-8 -13 70" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="2 15 101" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="4 -14 137" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+					</a-entity> 
+					<a-entity class="stalks" rotation="0 82 0" mixin="merge">
+						<a-entity class="stalk" rotation="-8 -10 38" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="-1 13 81" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="2 13 114" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="0 -7 143" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+					</a-entity> 
+					<a-entity class="stalks" rotation="0 152 0" mixin="merge">
+						<a-entity class="stalk" rotation="-1 -12 28" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="10 -1 64" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="8 15 113" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="4 1 147" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+					</a-entity> 
+					<a-entity class="stalks" rotation="0 212 0" mixin="merge">
+						<a-entity class="stalk" rotation="-4 -13 33" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="-5 14 63" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="8 -2 106" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="3 0 154" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+					</a-entity> 
+					<a-entity class="stalks" rotation="0 290 0" mixin="merge">
+						<a-entity class="stalk" rotation="-3 6 35" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="8 14 82" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="-2 -3 103" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+						<a-entity class="stalk" rotation="5 8 144" mixin="merge">
+							<a-entity mixin="ator" position="0 7 0"></a-entity>
+							<a-entity mixin="acyl" position="0 6 0"></a-entity>
+						</a-entity>
+					</a-entity> 
+				</a-entity>
+			</a-entity>			
+			</a-entity>
+		</a-entity>
    </a-scene>
    <script >
-		
-	
+		document.getElementById("ascene").addEventListener('loaded',function(){initGame('washHands')});
    </script>
  </body>
 </html>
