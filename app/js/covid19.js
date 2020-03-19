@@ -14,86 +14,103 @@ AFRAME.registerComponent('face-colors', {
         }
       });
 
-function updateAnimation(newVParticle,scaleTOX=1,scaleTOY=1){//updates the animation to specification
-	if(newVParticle.hasLoaded){//previously loaded
-		newVParticle.components.animation__fx.data.to = -newVParticle.components.animation__fx.data.to*scaleTOX;
-		newVParticle.components.animation__fy.data.to = -newVParticle.components.animation__fy.data.to*scaleTOY;
+function initVirusAnim(vir){//initialises the animation
+	//this el is for continuation of motion
+	if(!vir.hasLoaded){//entity not loaded properly yet, wait for it to load and call again
+		//console.log("DBG: initVA> not loaded",vir.id);
+		vir.addEventListener('loaded',function(){
+			//console.log("DBG: initVA>post load",vir.id);
+			initVirusAnim(vir);
+		});		
 	}
 	else{
-		console.log("DBG: Pre : ",newVParticle.id,scaleTOX,scaleTOY);
+		console.log("DBG: actVir(new):",vir.id);
+		vir.addEventListener('animationcomplete',function(e){
+			let animComp = e.detail.name;
+			let entity   = e.target;
+			if(animComp.includes("animation__f")){//reset direction, restart animation
+				entity.components[animComp].data.to = -entity.components[animComp].data.to;
+				entity.emit(entity.components[animComp].data.startEvents[0],false);
+				//console.log("DBG: evt>anComp>",entity.id,animComp,"reset dir:",entity.components[animComp].data.to);
+			}
+			else{
+				console.log("DBG: evt>anComp>fall complete",entity.id);
+				whObj.particles.find(p=>p.id==entity.id).state=_INACTV;
+				entity.children[0].components.material.material.opacity=1;//reset for future use
+				entity.setAttribute("visible",false); //hide it once it has completed its fall
+			}
+		});
+		vir.emit(vir.components.animation__fx.data.startEvents[0],false);
+		vir.emit(vir.components.animation__fy.data.startEvents[0],false);
+	}
+}
+
+function updateVirusAnim(newVParticle,scaleTOX=1,scaleTOY=1){//updates the animation to specification
+	if(newVParticle.hasLoaded){//previously loaded
+		let miFx=document.getElementById("fx").componentCache.animation__fx.dur*1;
+		let miFy=document.getElementById("fy").componentCache.animation__fy.dur*1;
+		newVParticle.components.animation__fx.data.to = -newVParticle.components.animation__fx.data.to*scaleTOX;
+		newVParticle.components.animation__fy.data.to = -newVParticle.components.animation__fy.data.to*scaleTOY;
+		newVParticle.children[0].components.material.material.opacity=1;
+		newVParticle.components.animation__fx.data.dur = wob(miFx,500);
+		newVParticle.components.animation__fy.data.dur = wob(miFy,500);
+	}
+	else{
+		console.log("DBG: updVA : ",newVParticle.id);
 		newVParticle.addEventListener("loaded",function(){
-			console.log("DBG: Post: ",newVParticle.id,scaleTOX,scaleTOY);
-			newVParticle.components.animation__fx.data.to = -newVParticle.components.animation__fx.data.to*scaleTOX;
-			newVParticle.components.animation__fy.data.to = -newVParticle.components.animation__fy.data.to*scaleTOY;
-			newVParticle.components.animation__fy.data.dur += wob(2000,300);
-			newVParticle.components.animation__fx.data.dur += wob(2000,300);
+			//console.log("DBG: Post: ",newVParticle.id,scaleTOX,scaleTOY);
+			updateVirusAnim(newVParticle,scaleTOX,scaleTOY);
 		});
 	}
 }
 
-function activateVirus(vir){//initialises the animation
-	//this el is for continuation of motion
-	if(!vir.hasLoaded){
-		vir.addEventListener('loaded',function(){
-			activateVirus(vir);
-		});		
-	}
-	else{
-		vir.addEventListener('animationcomplete',function(e){
-			let animComp = e.detail.name;
-			let entity   = e.target;
-			//console.log("DBG:",animComp, entity.id,entity.components[animComp].data.dur);
-			if(animComp.includes("animation__f")){//reset direction, restart animation
-				entity.components[animComp].data.to = -entity.components[animComp].data.to;
-				entity.emit(entity.components[animComp].data.startEvents[0],false);
-			}
-		});	
-		//this loop is for starting motion
-		for (let [key, value] of Object.entries(vir.components)) {
-			if(key.includes("animation__f")){
-				vir.emit(value.data.startEvents[0],false);
-			}
-		};
-	}
-}
-
-function spawnVirus(src,posRandom=false){
-	//check if we have invisible ones
-	let spawn;
+function spawnVirus(src,parentEl,posRandom=false){
+	//objective is to use an old one if available, else create a new one
+	//console.log("DBG: spawnVirus",src,parentEl);
+	//need to establish the position
 	let srcPos = src.object3D.position;
-	let isNew = true;
-	if(whObj.invisible.length>0){//if an invisible one exists, repurpose
-		spawn = whObj.invisible.shift();
-		//make spawn visible
-		spawn.children[0].components.material.material.opacity=1;
-		spawn.setAttribute("position0",[srcPos.x,srcPos.y,wob(srcPos.z,3)].join(" "));
-	}
-	else{//create a new one
-		spawn=virusFactory(src,src.parentEl,whObj.total);
-		whObj.total++; //increment total
-	}
-	whObj.active.push(spawn);
-	
-	let pos0 = spawn.getAttribute("position0");
+	let pos0 = [srcPos.x,srcPos.y,wob(srcPos.z,1)].join(" ");
+	if(srcPos.z==0) [srcPos.x,srcPos.y,wob(-20,1)].join(" ");
 	if(posRandom){//wobble around src pos
 		let tmp = pos0.split(" ");
-		pos0 = [wob(Math.floor(tmp[0]),2),wob(Math.floor(tmp[1]),2),wob(Math.floor(tmp[2]),2)].join(" ");
-		console.log("DBG:",tmp.join(" "),pos0);
+		pos0 = [wob(Math.floor(tmp[0]*1),4),wob(Math.floor(tmp[1]*1),4),wob(Math.floor(tmp[2]*1),1)].join(" ");
 	}
-	spawn.setAttribute("position",pos0);
-	updateAnimation(spawn,Math.random()>0.7?1:-1,Math.random()>0.7?1:-1);
-	activateVirus(spawn);
+	console.log("DBG: spawnVirus> posZ:",pos0.split(" ")[2],"src",srcPos.z);
+	//see if we can find an old one
+	let spawnIdx=whObj.particles.findIndex(inv=>inv.isActive(_INACTV));
+	let spawn=null;
+	if(spawnIdx>0){
+		whObj.particles[spawnIdx].state=_ACTIVE; //set it to active state
+		spawn = whObj.particles[spawnIdx].node;//.splice(spawnIdx,1)[0];
+		spawn.setAttribute("visible",true); //make the structure visible
+		spawn.setAttribute('position',pos0);
+		updateVirusAnim(spawn,Math.random()>0.7?1:-1,Math.random()>0.7?1:-1);
+		spawn.emit("floatX",false);
+		spawn.emit("floatY",false);
+	}
+	else{//get a new one
+		spawn=virusFactory(src,parentEl,whObj.particles.length);
+		spawn.setAttribute('position',pos0);
+		whObj.particles.push(getObj(spawn));
+		initVirusAnim(spawn); //since it is new, setup the listeners
+	}
+	
+	//now we have a proper spawn ready to push
+	
+	console.log("DBG: spawnVirus>activated",spawn.id,whObj.particles.length);
+}
+
+function getObj(vir){
+	return {id:vir.id,state:_ACTIVE, isActive:chkState, node:vir};	
 }
 
 function virusFactory(src,scene,id){//called when new one needs to be added
 		let newPos = src.object3D.position;
 		
 		let newVParticle = document.createElement("a-entity");
-		newVParticle.setAttribute("id","cov0"+id);
-		//IMPORTANT: position0 is not same as position
-		newVParticle.setAttribute("position0",[newPos.x,newPos.y,wob(newPos.z,3)].join(" "));
-		newVParticle.setAttribute("mixin","fx fy");
-		//let nextInstance =src.getElementsByClassName("cov")[0].cloneNode(false); //not a deep copy
+		newVParticle.setAttribute("id","cov"+(id>9?"":"0")+id);
+		newVParticle.setAttribute("mixin","fx fy washOut");
+		newVParticle.setAttribute("class","vParticle");
 		
 		newVParticle.appendChild(buildVirus());
 		scene.appendChild(newVParticle);

@@ -6,8 +6,8 @@
 
 	<script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
 	<script src="https://unpkg.com/aframe-geometry-merger-component/dist/aframe-geometry-merger-component.min.js"></script>
-	<!--script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script-->
-   
+	<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+	<script src="https://unpkg.com/aframe-aabb-collider-component@3.1.0/dist/aframe-aabb-collider-component.min.js"></script>
 	<script src="../js/covid19.js"></script>
 	<script src="../js/gameLogic.js"></script>
 	<script>
@@ -15,10 +15,22 @@
 		window.addEventListener('error', function(event) { alert(event); })		
 	</script>
  </head>
- <body>
+ <body style="margin : 0px; overflow: hidden;">
 	
-	<a-scene id="ascene" vr-mode-ui="enabled: false"background="color: #f0f0f0"  stats>
+	<a-scene id="ascene" vr-mode-ui="enabled: false"  stats embedded arjs>
 		<a-assets>
+			<a-mixin 
+				geometry="primitive:sphere;buffer:false;segments-height:9;segments-width:9;radius:0.4" face-colors="color:goldenrod" id="tsph" >
+			</a-mixin>
+			<a-mixin
+				geometry="primitive:cylinder;buffer:false;segments-radial:6;radius:0.4" face-colors="color:goldenrod" id="tcyl">
+			</a-mixin>
+			<a-mixin position="0 -0.7 0" 
+				geometry="primitive:sphere;buffer:false;segments-height:9;segments-width:9;radius:0.4" face-colors="color:goldenrod" id="tsph2" >
+			</a-mixin>
+			<a-mixin
+				geometry="primitive:cylinder;buffer:false;segments-radial:6;radius:0.2;height:1" face-colors="color:goldenrod" id="tcyl2">
+			</a-mixin>
 			<a-mixin rotation="90 0 0"
 				geometry="primitive:torus;buffer: false;segments-radial:6;segments-tubular:8;radius:0.5" face-colors="color: coral" id="ator">
 			</a-mixin>
@@ -45,51 +57,84 @@
 			>
 			</a-mixin>
 			<a-mixin transparent="true"
-				animation__wy="property:object3D.position.y;to:-15;loop:1;dur:2000;easing:easeInSine;startEvents:wOut;" 
-				animation__wo="property:material.opacity;to:0;loop:1;dur:2000;easing:easeInSine;startEvents:wOut;" 
+				animation__wy="property:object3D.position.y;to:-15;loop:1;dur:1000;easing:easeInSine;startEvents:wOut;pauseEvents:pauseWash" 
 				id="washOut"
 			>
 			</a-mixin>
 			<a-mixin transparent="true"	
-				animation__wo="property:material.opacity;to:0;loop:1;dur:2000;easing:easeInSine;startEvents:wOut;" 
+				animation__wo="property:material.opacity;to:0.2;loop:1;dur:1000;easing:easeInSine;startEvents:wOut;pauseEvents:pauseWash;" 
 				id="washOutV"
 			>
+			</a-mixin>
+			<a-mixin id="ff"
+				geometry="buffer:false"
+			>
+			
 			</a-mixin>
 		</a-assets>
 		<!--a-marker preset='hiro'>
 		  <!-- here define the content to display on top of the marker -- >
 		  <a-sphere color="tomato" radius="0.2"></a-sphere>
 		</a-marker-->
-			<a-entity class="marker_washHands" position="0 0 -10">
-				<a-entity class="tap" rotation="0 0 0">
-					<a-entity class="tap_body">
-						<a-cylinder radius="0.4" height="1.57" color="goldenrod"></a-cylinder>
-						<a-cylinder radius="0.4" height="1" color="goldenrod" rotation="90 0 0" position="0 0.75 -0.5"></a-cylinder>
-						<a-sphere radius="0.4" color="goldenrod" position="0 0.75 0"></a-sphere>
-						<a-sphere radius="0.8" color="goldenrod" position="0 0.75 -1.3"></a-sphere>
-						<a-cylinder radius="0.6" height="1.8" color="goldenrod" rotation="90 0 0" position="0 0.75 -2"></a-cylinder>
-						<a-cylinder radius="0.3" height="1.57" color="goldenrod" position="0 1.7 -1.3"></a-cylinder>
-						<a-sphere radius="0.5"  color="goldenrod" position="0 2.4 -1.3">
-							<a-cylinder radius="0.2" height="1" color="goldenrod" rotation="90 0 0" position="0 0 -0.5">
-								<a-sphere radius="0.4" color="goldenrod" position="0 -0.7 0"></a-sphere>
-							</a-cylinder>
-							<a-cylinder radius="0.2" height="1" color="goldenrod" rotation="-90 0 0" position="0 0 0.5">
-								<a-sphere radius="0.4" color="goldenrod" position="0 -0.7 0"></a-sphere>
-							</a-cylinder>
-							<a-cylinder radius="0.2" height="1" color="goldenrod" rotation="0 0 90" position="0.5 0 0">
-								<a-sphere radius="0.4" color="goldenrod" position="0 -0.7 0"></a-sphere>
-							</a-cylinder>
-							<a-cylinder radius="0.2" height="1" color="goldenrod" rotation="0 0 -90" position="-0.5 0 0">
-								<a-sphere radius="0.4" color="goldenrod" position="0 -0.7 0"></a-sphere>
-							</a-cylinder>
-						</a-sphere>
-						
-					</a-entity>
-					<a-entity class="flow">
-						
+		<a-marker preset='hiro'>
+			<a-entity class="hitElements">
+				<a-entity class="marker_washHands" position="0 0 0" visible="true">
+					<a-entity id="tap" class="collider" rotation="0 0 0"  aabb-collider="objects: .vParticle;debug:false;enabled:false;">
+						<a-entity class="tap_body" mixin="merge">
+							<a-entity mixin="tcyl" geometry="height:1.57"></a-entity>
+							<a-entity mixin="tcyl" position="0 0.75 -0.5" rotation="90 0 0" 								   ></a-entity>
+							<a-entity mixin="tcyl" position="0 0.75 -2.4" rotation="90 0 0" height="1.80" geometry="radius:0.5"></a-entity>
+							<a-entity mixin="tcyl" position="0 1.7  -1.3" 			        height="1.57" geometry="radius:0.3"></a-entity>
+							<a-entity mixin="tsph" position="0 0.75    0"					   ></a-entity>
+							<a-entity mixin="tsph" position="0 0.75 -1.3" geometry="radius:0.8"></a-entity>
+							<a-entity mixin="tsph" position="0 2.4  -1.3" geometry="radius:0.5"></a-entity>
+							<a-entity class="tapTwist" mixin="merge" position="0 2.4 -1.3">
+								<a-entity mixin="tcyl2" rotation="90  0   0" position="0    0 -0.5"></a-entity>
+								<a-entity mixin="tsph2" rotation="90  0   0" position="0    0 -1.2"></a-entity>	
+								<a-entity mixin="tcyl2" rotation="-90 0   0" position="0    0  0.5"></a-entity>
+								<a-entity mixin="tsph2" rotation="-90 0   0" position="0    0  1.2"></a-entity>
+								<a-entity mixin="tcyl2" rotation="0   0  90" position="0.5  0    0"></a-entity>
+								<a-entity mixin="tsph2" rotation="0   0  90" position="1.2  0    0"></a-entity>
+								<a-entity mixin="tcyl2" rotation="0   0 -90" position="-0.5 0    0"></a-entity>
+								<a-entity mixin="tsph2" rotation="0   0 -90" position="-1.2 0    0"></a-entity>
+							</a-entity>
+						</a-entity><!--animation__y="property:object3D.position.y;from:-0.8;to:0.1;dir:alternate;loop:true;easing:linear;dur:1000;"-->
+						<a-entity class="tap_flow">
+							<a-entity animation__y="property:position.y;from:0.5;to:-0.75;dur:500;dir:normal;loop:true;easing:linear;">							 
+								<a-circle color="lightskyblue" radius="0.3" position="0 -1 -0.3" mixin="ff" face-colors="lightskyblue"
+									animation__z="property:object3D.position.z;from:-0.3;to:0.3;dir:alternate;loop:true;easing:linear;dur:1000;"
+									animation__s="property:scale.y;from:0.1;to:1;dur:500;dir:normal;loop:true;easing:linear;">								
+								</a-circle>
+							</a-entity>
+							<a-entity animation__y="property:position.y;from:0.3;to:-0.8;dur:350;dir:normal;loop:true;easing:linear;">							 
+								<a-circle color="deepskyblue" radius="0.4" position="0 -1 -0.3" mixin="ff" face-colors="deepskyblue"
+									animation__z="property:object3D.position.z;from:-0.3;to:0.2;dir:alternate;loop:true;easing:linear;dur:800;"
+									animation__s="property:scale.y;from:0.2;to:1.0;dur:750;dir:normal;loop:true;easing:linear;">								
+								</a-circle>
+							</a-entity>
+							<a-entity animation__y="property:position.y;from:0.5;to:-0.75;dur:500;dir:normal;loop:true;easing:linear;">							 
+								<a-circle color="lightskyblue" radius="0.3" position="0 -1 -0.3" mixin="ff" face-colors="lightskyblue"
+									animation__z="property:object3D.position.z;from:-0.3;to:0.3;dir:alternate;loop:true;easing:linear;dur:1000;"
+									animation__s="property:scale.y;from:0.1;to:1;dur:500;dir:normal;loop:true;easing:linear;">								
+								</a-circle>
+							</a-entity>
+							<a-entity animation__y="property:position.y;from:0.4;to:-0.5;dur:750;dir:normal;loop:true;easing:linear;">							 
+								<a-circle color="deepskyblue" radius="0.2" position="0 -1 -0.3" mixin="ff" face-colors="deepskyblue"
+									animation__z="property:object3D.position.z;from:-0.2;to:0.3;dir:alternate;loop:true;easing:linear;dur:800;"
+									animation__s="property:scale.y;from:0.2;to:1.1;dur:750;dir:normal;loop:true;easing:linear;">								
+								</a-circle>
+							</a-entity>
+							<a-entity animation__y="property:position.y;from:0.4;to:-0.6;dur:600;dir:normal;loop:true;easing:linear;">							 
+								<a-circle color="dodgerblue" radius="0.2" position="0 -1 -0.3" mixin="ff" face-colors="dodgerblue"
+									animation__z="property:object3D.position.z;from:-0.2;to:0.3;dir:alternate;loop:true;easing:linear;dur:800;"
+									animation__s="property:scale.y;from:0.2;to:1.1;dur:750;dir:normal;loop:true;easing:linear;">								
+								</a-circle>
+							</a-entity>
+						</a-entity>
 					</a-entity>
 				</a-entity>
 			</a-entity>
+		</a-marker>	
 	
 	
 		<!-- define a simple camera -->
@@ -102,7 +147,7 @@
 				<a-plane color="#8C8" height="2" width="40" rotation="-90 0 0" position=" 0   17 -20" material="side: double;"></a-plane>
 			
 				<!-- nest all the entities that float within it's range-->
-				<a-entity id="cov00" class="vParticle" position="0 0 -20" mixin="fx fy washOut" material="opacity: 0.5; transparent: true">
+				<a-entity id="cov00" class="vParticle" position="0 7 -20" mixin="fx fy washOut">
 				</a-entity>			
 			</a-entity>
 		</a-entity>
@@ -111,6 +156,10 @@
 		document.getElementById("ascene").addEventListener('loaded',function(){
 			initGame('washHands');
 			markerHandler();
+			activateGame();
+		});
+		document.addEventListener('hitstart',function(evt){
+			if(currGameObj.tracking) processHit(evt);      
 		});
 		let v=document.getElementById("cov00");
    </script>
