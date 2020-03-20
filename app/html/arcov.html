@@ -14,9 +14,30 @@
 		window.onerror = function(message, source, lineno, colno, error) { alert([message,source,lineno,colno,error].join("\n"));}
 		window.addEventListener('error', function(event) { alert(event); })		
 	</script>
+	<style>
+	#overlay{
+		position: fixed; /* Sit on top of the page content */
+		width: 150px; /* Full width (cover the whole page) */
+		height: 50px; /* Full height (cover the whole page) */
+		top: 200px;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		padding: 10px;
+		overflow:hidden;
+		font-family:Helvetica;
+		margin:5px;
+		color:silver;
+		background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+		z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+		cursor: pointer; /* Add a pointer on hover */
+	}
+	</style>
  </head>
  <body style="margin : 0px; overflow: hidden;">
-	
+	<div id="overlay">
+	<span id="pos">Marker not found</span>
+	</div> 
 	<a-scene id="ascene" vr-mode-ui="enabled: false"  stats embedded arjs>
 		<a-assets>
 			<a-mixin 
@@ -49,15 +70,15 @@
 				animation__ry="property:rotation.y;from:0;to:360;dur:6000;loop:true;dir:normal;easing:linear;" id="Ry">
 			</a-mixin>
 			<a-mixin 
-				animation__fx="property:object3D.position.x;to:20;loop:1;dur:5000;easing:easeInOutSine;startEvents:floatX;pauseEvents:pause, wOut" id="fx"
+				animation__fx="property:object3D.position.x;to:3.8;loop:1;dur:5000;easing:easeInOutSine;startEvents:floatX;pauseEvents:pause, wOut" id="fx"
 			>
 			</a-mixin>
 			<a-mixin 
-				animation__fy="property:object3D.position.y;to:15;loop:1;dur:8000;easing:easeInOutSine;startEvents:floatY;pauseEvents:pause, wOut" id="fy"
+				animation__fy="property:object3D.position.y;to:2;loop:1;dur:8000;easing:easeInOutSine;startEvents:floatY;pauseEvents:pause, wOut" id="fy"
 			>
 			</a-mixin>
 			<a-mixin transparent="true"
-				animation__wy="property:object3D.position.y;to:-15;loop:1;dur:1000;easing:easeInSine;startEvents:wOut;pauseEvents:pauseWash" 
+				animation__wy="property:object3D.position.y;to:-5;loop:1;dur:1000;easing:easeInSine;startEvents:wOut;pauseEvents:pauseWash" 
 				id="washOut"
 			>
 			</a-mixin>
@@ -76,9 +97,16 @@
 		  <!-- here define the content to display on top of the marker -- >
 		  <a-sphere color="tomato" radius="0.2"></a-sphere>
 		</a-marker-->
-		<a-marker preset='hiro'>
+		<a-marker preset='hiro' smooth="true">
+				
 			<a-entity class="hitElements">
-				<a-entity class="marker_washHands" position="0 0 0" visible="true">
+				<!--a-entity id="localAxes" scale="0.1 0.1 0.1">
+						<a-cone height="2" radius-bottom="0.5" rotation="0 0 -90" position="1.5 0 0" color="tomato"></a-cone>				
+						<a-cone height="2" radius-bottom="0.5" rotation="90 0 0" position="0 0 1.5" color="cornflowerblue"></a-cone>
+						<a-cone height="2" radius-bottom="0.5" rotation="0 0 0" position="0 1.5 0" color="seagreen"></a-cone>
+						<a-sphere id="sphere" position="0 0 0" scale="1 1 1" radius="0.8" color="goldenrod" ></a-sphere>	
+				</a-entity-->	
+				<a-entity class="marker_washHands" position="0 0 0" visible="true" scale="0.25 0.25 0.25">
 					<a-entity id="tap" class="collider" rotation="0 0 0"  aabb-collider="objects: .vParticle;debug:false;enabled:false;">
 						<a-entity class="tap_body" mixin="merge">
 							<a-entity mixin="tcyl" geometry="height:1.57"></a-entity>
@@ -141,13 +169,13 @@
 		<a-entity camera position="0 0 0">
 			<a-entity class="game_scene" id="game_washHands">
 			<!-- debug planes -->
-				<a-plane color="#8C8" height="40" width="2" rotation="0 -90 0" position="-22.5 0 -20" material="side: double;"></a-plane>
-				<a-plane color="#8C8" height="40" width="2" rotation="0 -90 0" position=" 22.5 0 -20" material="side: double;"></a-plane>
-				<a-plane color="#8C8" height="2" width="40" rotation="-90 0 0" position=" 0  -17 -20" material="side: double;"></a-plane>
-				<a-plane color="#8C8" height="2" width="40" rotation="-90 0 0" position=" 0   17 -20" material="side: double;"></a-plane>
+				<a-plane color="blue" height="40" width="2" rotation="0 -90 0" position="-5 0 -10" material="side: double;"></a-plane>
+				<a-plane color="blue" height="40" width="2" rotation="0 -90 0" position=" 5 0 -10" material="side: double;"></a-plane>
+				<a-plane color="#8C8" height="2" width="40" rotation="-90 0 0" position=" 0  -3 -10" material="side: double;"></a-plane>
+				<a-plane color="#8C8" height="2" width="40" rotation="-90 0 0" position=" 0   3 -10" material="side: double;"></a-plane>
 			
 				<!-- nest all the entities that float within it's range-->
-				<a-entity id="cov00" class="vParticle" position="0 7 -20" mixin="fx fy washOut">
+				<a-entity id="cov00" class="vParticle" position="2 2 -7" mixin="fx fy washOut">
 				</a-entity>			
 			</a-entity>
 		</a-entity>
@@ -158,10 +186,41 @@
 			markerHandler();
 			activateGame();
 		});
+		
+		document.getElementById("ascene").addEventListener('click',function(){
+			let elem = document.fullscreenElement;
+			if(elem===null){
+				requestFullscreen(document.getElementById("ascene").parentNode);
+			}
+			else{
+				document.exitFullscreen();
+			}
+		});
+		
+		let dbgMarker = setInterval(function(){
+			if(currGameObj===null||!currGameObj.tracking){
+				return;
+			}
+			positionMarker();
+		},200);
+		
 		document.addEventListener('hitstart',function(evt){
 			if(currGameObj.tracking) processHit(evt);      
 		});
 		let v=document.getElementById("cov00");
+		
+		function requestFullscreen(elem) {
+			
+			if (elem.requestFullscreen) {
+				elem.requestFullscreen();
+			} else if (elem.mozRequestFullScreen) { /* Firefox */
+				elem.mozRequestFullScreen();
+			} else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+				elem.webkitRequestFullscreen();
+			} else if (elem.msRequestFullscreen) { /* IE/Edge */
+				elem.msRequestFullscreen();
+			}
+		} 
    </script>
  </body>
 </html>

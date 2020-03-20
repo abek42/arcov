@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiny/Short Serious Games for Covid-19 Awareness</title>
+    <script>
+        function setDebugDiv(){
+            //$("reload").html(JSON.stringify(Date()).split("+")[0]);
+            document.getElementById("reload").innerHTML = JSON.stringify(Date()).split("+")[0];
+        }
+    </script>
+	<style>
+	body{
+		display:flex;
+		width:100%;
+		max-width:1000px;
+		margin:auto;
+		flex-direction:column;
+		font-family:Arial,sans-serif;
+	}
+	.wrap{
+		
+		display: flex;
+		flex-direction: column;
+		padding: 10px;
+		border:2px solid #034488;
+		border-radius:5px;
+		margin: 5px;
+		align-items:center
+	}
+	.wrap2{
+
+		display: flex;
+		flex-direction: row;
+		padding: 10px;
+		border:2px solid #034488;
+		border-radius:5px;
+		margin: 5px;
+		align-items:center;
+		flex-wrap:wrap;
+	}
+	.wrap3{
+
+		display: flex;
+		flex-direction: column;
+		padding: 10px;
+		border:2px solid #034488;
+		border-radius:5px;
+		margin: 5px 0px;
+		align-items:center;
+		width:100%;
+	}
+	.gameTextI,.gameTextR {
+		background: #edece8;
+		padding: 5px;
+		font-size: medium;
+		width: 100%;
+	}
+	.gameTextS, .gameIW{
+		background: #fffcf6;
+		padding: 5px;
+		font-size: medium;
+		width: 100%
+	}
+	.imgIW{
+		align-items:center;
+	}
+	.gameImg{
+		width:300px;
+	}
+	
+	#wrapIntro{
+		background-color: #178fd6;
+		color:#ccdde8;
+	}
+	h3{
+		text-align:center;
+		color:#fffcf6;
+	}
+	.gameTitle {
+		width: 100%;
+		font-size: large;
+		font-weight:bold;
+		display: inline-block;
+		background: #178fd6;
+		padding: 5px;
+		border-radius: 3px;
+		color:#fffcf6;
+		}
+	.gameTextI{
+		
+	}
+	.rev{
+		font-size:smaller;
+		width:100%;
+		display:inline-block;
+	}
+	</style>
+</head>
+<body onload="setDebugDiv();">
+<div id="debug">
+	<input type="button" onclick="location.reload();" value="Reload"/>
+	<span id="reload">ERROR</span>
+
+	<!--input type="button" onclick="doNext();" value="Next" id="next"/-->
+</div>
+<div id="wrapIntro" class="wrap">
+<h3>Serious Games for Covid-19 Awareness</h3>
+<p class="intro">
+	This page started out with a simple question:<br> <i> How do you explain and promote the two initial protective guidelines ("Wash Hands" and "Avoid Touching Face") to a child, like my 4yr old nephew?</i><br>
+	I teach WebXR and Game Design, so it seemed like a good idea to apply those concepts into practice.<br>
+	The outcome is two prototype games which could explain the first (and maybe the second) guideline through practice.
+</p>
+</div>
+<div id="wrapGames" class="wrap2">
+	<div id="wrapARCoV" class="wrap3">
+		<span class="gameTitle">ARCoV-Wash</span>
+		<span class="gameIW imgIW">
+			<a href="./arcov.html" class="noDecor">
+				<img class="gameImg" src="../assets/gifs/arcov.gif">
+				</img>
+			</a>
+		</span>
+		<span class="gameTextI">
+			ARCoV-Wash is an Augmented Reality Game using a marker for in-game interaction.<br> 
+			The idea links the use of a running water-tap with the destruction of the virus.<br>
+			The AR version relies on the use of the Hiro marker (<a href="../assets/marker/hiro.png" target="_blank">here</a>) to place a water-tap in the AR view.<br>
+			Every time a virus particle comes in contact with the water-tap, it is killed off. <br>
+			The virus particles will periodically replicate.<br>
+			To win, kill off all the particles before their number reaches a critical mass.
+		</span>
+		<span class="gameTextS">
+			&#9210;  Use landscape orientation and then single-tap to enter full-screen mode <br>
+			&#9210;  Grant access to phone camera (rear-facing)<br>
+			&#9210;  Place marker (printed or on screen of another device) in view of the camera<br>
+			&#9210;  Move marker within AR space to bring water-tap into contact with virus particles<br>
+		</span>
+		<span class="gameTextR">
+			<em>Requirements</em>: WebGL-enabled smartphone and browser (certain Apple versions and older smartphones may not work).<br>
+			<em>Permissions</em>: Access to rear-facing camera<br>
+			<em>Marker</em>: <a href="../assets/marker/hiro.png" target="_blank">Hiro</a> printed to a 6x6 inch size or on another phone/PC screen<br>
+			<em>Hint</em>: In certain situations, its best to refresh the page after changing orientation.
+		</span>
+	</div>
+	<div id="wrapVRCoV" class="wrap3">
+		<span class="gameTitle">VRCoV</span>
+		<span class="gameIW">
+			<a href="./vrcov.html" class="noDecor">
+				<img class="gameImg" src="../assets/gifs/vrcov.gif"></img>
+			</a>
+		</span>
+		<span class="gameTextI">
+			VRCoV is an Virtual Reality Game with a gaze-driven whack-a-mole mechanic.<br> 
+			Again the idea links the use of a running water-tap with the destruction of the virus.<br>
+			Move the smartphone to look around. <br>
+			Hold gaze-reticle on virus particle till it gets killed off.<br>
+			The virus particles will periodically replicate.<br>
+			To win, kill off all the particles before their number reaches a critical mass.
+		</span>
+		<span class="gameTextS">
+			&#9210; Double-tap to enter full-screen mode.<br>
+			&#9210; If Google-Cardboard type harness is available, use the "VR" button to enter stereoscopic mode.<br>
+			&#9210; Move gaze-reticle to where virus particle appears and hold gaze to kill it<br>
+		</span>
+		<span class="gameTextR"> 
+			<em>Requirements</em>: WebGL-enabled smartphone and browser (certain Apple versions and older smartphones may not work).<br>
+			<em>Permissions</em>: Access to rear-facing camera<br>
+			<em>Marker</em>: <a href="../assets/marker/hiro.png" target="_blank">Hiro</a> printed to a 6x6 inch size or on another phone/PC screen
+		</span>
+	</div>
+</div>
+<div id="wrapDisclaimer" class="wrap">
+	<span class="gameTitle">Disclaimer</span>
+	<span class="gameTextS">The contents of this page are in no way intended to be definitive or correct information sources for the COVID-19 global pandemic.
+	Government Health advice regarding the actual disease should be followed at all times.</span>
+	<span class="rev">No cookies but visits are logged &gt; 
+		<a href="https://www.revolvermaps.com/livestats/5z110r6cs22/">
+			<img src="//rf.revolvermaps.com/w/3/s/a/0/20/2/ff8a00/aaccf6/ff0000/5z110r6cs22.png" alt="Stats" style="vertical-align:middle;height:20px;border:0;">
+		</a>
+	</span>
+</div> 
+
+</body>
+</html>

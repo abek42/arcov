@@ -22,8 +22,8 @@ function chkState(refState=_ACTIVE){
 }
 
 let whObj = {total:1,particles:[],washed:0,firstRun:true,game:"washHands",
-				tickInterval:15000,tick:-1,tracking:false,tickFunction:washTick,hitFunction:washHit,
-				constants:{activeMax:10,washMin:15,activeMin:3}};
+				tickInterval:10000,tick:-1,tracking:false,tickFunction:washTick,hitFunction:washHit,
+				constants:{activeMax:8,washMin:10,activeMin:3}};
 function initGame(task){
 	//hide all first
 	let gameScenes = document.getElementsByClassName("game_scene");
@@ -55,8 +55,17 @@ Banner: Wash your hands with soap, for at least 20 seconds
 function markerHandler(){
 	document.addEventListener('markerFound',function(){//every time marker is found, this event is triggered
 		if(currGameObj===null) activateGame();
+		currGameObj.tracking=true;
 		//otherwise the game state takes care of itself
 	});
+	document.addEventListener('markerLost',function(){
+		if(currGameObj!==null) currGameObj.tracking=false;
+	});
+}
+
+function positionMarker(){
+	let markerPos = document.querySelector("a-marker").getAttribute("position");
+	document.getElementById("pos").innerHTML =[(markerPos.x).toFixed(1),(markerPos.y).toFixed(1),(markerPos.z).toFixed(1)];
 }
 
 function activateGame(){
@@ -134,7 +143,7 @@ function washHit(particle){//only triggered when reducing count
 	//move it from active to inactive, update state to indicate new washed one
 	let p = whObj.particles.find(p=>p.id==particle.id);
 	if(typeof(p)==="undefined") {//unexpected situation where inactive particle hits tap?
-		console.log("ERR: Unexpected washHit",particle.id,whObj.particles.filter(p=>p.isActive).map(a=>a.id).join(", "));
+		console.log("ERR: Unexpected washHit",particle.id,whObj.particles.filter(p=>p.isActive()).map(a=>a.id).join(", "));
 		return; //do nothing
 	}
 	//move to invisible, and increment washed count

@@ -1,0 +1,172 @@
+<html>
+ <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VRCov</title>
+   <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
+   <script src="https://unpkg.com/aframe-geometry-merger-component/dist/aframe-geometry-merger-component.min.js"></script>
+   <script src="../js/vrcovLogic.js"></script>
+   <script src="../js/covid19vr.js"></script>
+		
+ </head>
+ <a-scene background="color:azure" id="ascene"  debug stats>
+		<a-assets>		
+			<a-mixin id="popup"
+				animation__up="property:position.y;to: 1;dur:750;dir:normal;loop:1;easing:easeOutSine;startEvents:popup;"
+				animation__dn="property:position.y;to:-2;dur:850;dir:normal;loop:1;easing:easeInSine; startEvents:popdn;delay:2500;"
+			>
+			</a-mixin>
+			<a-mixin geometry-merger="preserveOriginal: false" material="vertexColors: face" id="mergeTap">
+			</a-mixin>
+			<a-mixin geometry-merger="preserveOriginal: false" material="vertexColors: face" id="merge">
+			</a-mixin>
+			<a-mixin 
+				geometry="primitive:sphere;buffer:false;segments-height:9;segments-width:9;radius:0.4" face-colors="color:goldenrod" id="tsph" >
+			</a-mixin>
+			<a-mixin
+				geometry="primitive:cylinder;buffer:false;segments-radial:6;radius:0.4" face-colors="color:goldenrod" id="tcyl">
+			</a-mixin>
+			<a-mixin position="0 -0.7 0" 
+				geometry="primitive:sphere;buffer:false;segments-height:9;segments-width:9;radius:0.4" face-colors="color:goldenrod" id="tsph2" >
+			</a-mixin>
+			<a-mixin
+				geometry="primitive:cylinder;buffer:false;segments-radial:6;radius:0.2;height:1" face-colors="color:goldenrod" id="tcyl2">
+			</a-mixin>
+						<a-mixin rotation="90 0 0"
+				geometry="primitive:torus;buffer: false;segments-radial:6;segments-tubular:8;radius:0.5" face-colors="color: coral" id="ator">
+			</a-mixin>
+			<a-mixin
+				geometry="primitive:cylinder;buffer:false;segments-radial:6;radius:0.25;height:2.3" face-colors="color:mediumslateblue" id="acyl">
+			</a-mixin>
+			<a-mixin
+				geometry="primitive:sphere;buffer:false;segments-height:9;segments-width:9;radius:5;" face-colors="color:mediumvioletred" id="asph">
+			</a-mixin>
+
+			<a-mixin id="ff" geometry="buffer:false">			
+			</a-mixin>
+			<a-mixin id="spin"
+				animation__d="property:rotation.y;from:0;to:360;dur:6000;loop:true;dir:normal;easing:linear;" >
+			</a-mixin>
+			<a-mixin 
+				animation__rxyz="property:rotation;from:0 0 0;to:360 360 360;dur:5000;loop:true;dir:normal;easing:linear;" id="Rxyz">
+			</a-mixin>
+			<a-mixin transparent="true"	
+				animation__wo="property:material.opacity;to:0.0;loop:1;dur:1000;easing:easeInSine;startEvents:wOut;pauseEvents:pauseWash;" 
+				id="washOutE"
+			>
+		</a-assets>
+		
+	
+		<a-entity class="ground"  geometry="primitive: circle; segments:6; radius: 100" rotation="90 0 0"  position="0 -0.2 0" material="wireframe:true;side: double; color:#D2691E; opacity:1.0"></a-entity>
+		<a-entity class="ring"  geometry="primitive: ring; radius-outer: 3;radius-inner:2.8" rotation="90 0 0"  position="0 -0.18 0" material="side: double; color:red; opacity:1.0"></a-entity>
+		<a-entity id="camera" camera="active: true" look-controls wasd-controls position="0 1.6 0">
+			<a-entity id="cursor" raycaster="objects: .confirm, .capsid"
+				  animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+				  animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1000; from: 1 1 1; to: 0.1 0.1 0.1"
+				  animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
+				  cursor="fuse: true;"
+				  material="color: black; shader: flat; transparent:true;opacity:0.2"
+				  position="0 0 -2"
+				  geometry="primitive: ring;radiusInner: 0.16; radiusOuter: 0.24;">
+				  
+			</a-entity>
+			<a-entity id="tap" rotation="0 0 0" position="0 0 -2" scale="0.12 0.12 0.12">
+					<a-entity id="tapWrap"
+						animation__click="property: scale; startEvents: clickTap; easing: easeInCubic; dur: 150; from: 1.4 1.4 1.4; to: 1 1 1"
+						animation__fusing="property: scale; startEvents: fusingTap; easing: easeInCubic; dur: 1000; from: 1 1 1; to: 1.4 1.4 1.4"
+						animation__mouseleave="property: scale; startEvents: mouseleaveTap; easing: easeInCubic; dur: 500; to: 1 1 1"
+					>
+						<a-entity class="tap_body" >
+							<a-entity class="tap_lower_body" mixin="merge">
+								<a-entity mixin="tcyl" geometry="height:1.57"></a-entity>
+								<a-entity mixin="tcyl" position="0 0.75 -0.5" rotation="90 0 0" 								   ></a-entity>
+								<a-entity mixin="tcyl" position="0 0.75 -2.4" rotation="90 0 0" height="1.80" geometry="radius:0.5"></a-entity>
+								<a-entity mixin="tcyl" position="0 1.7  -1.3" 			        height="1.57" geometry="radius:0.3"></a-entity>
+								<a-entity mixin="tsph" position="0 0.75    0"					   ></a-entity>
+								<a-entity mixin="tsph" position="0 0.75 -1.3" geometry="radius:0.8"></a-entity>
+								<a-entity mixin="tsph" position="0 2.4  -1.3" geometry="radius:0.5"></a-entity>	
+							</a-entity>
+							<a-entity id="tapHead" class="tapTwist" mixin="merge spin" position="0 2.4 -1.3" >
+								<a-entity mixin="tcyl2" rotation="90  0   0" position="0    0 -0.5"></a-entity>
+								<a-entity mixin="tsph2" rotation="90  0   0" position="0    0 -1.2"></a-entity>	
+								<a-entity mixin="tcyl2" rotation="-90 0   0" position="0    0  0.5"></a-entity>
+								<a-entity mixin="tsph2" rotation="-90 0   0" position="0    0  1.2"></a-entity>
+								<a-entity mixin="tcyl2" rotation="0   0  90" position="0.5  0    0"></a-entity>
+								<a-entity mixin="tsph2" rotation="0   0  90" position="1.2  0    0"></a-entity>
+								<a-entity mixin="tcyl2" rotation="0   0 -90" position="-0.5 0    0"></a-entity>
+								<a-entity mixin="tsph2" rotation="0   0 -90" position="-1.2 0    0"></a-entity>
+							</a-entity>
+						</a-entity><!--animation__y="property:object3D.position.y;from:-0.8;to:0.1;dir:alternate;loop:true;easing:linear;dur:1000;"-->
+						<a-entity class="tap_flow">
+							<a-entity animation__y="property:position.y;from:0.5;to:-0.75;dur:500;dir:normal;loop:true;easing:linear;">							 
+								<a-circle color="lightskyblue" radius="0.3" position="0 -1 -0.3" mixin="ff" face-colors="lightskyblue"
+									animation__z="property:object3D.position.z;from:-0.3;to:0.3;dir:alternate;loop:true;easing:linear;dur:1000;"
+									animation__s="property:scale.y;from:0.1;to:1;dur:500;dir:normal;loop:true;easing:linear;">								
+								</a-circle>
+							</a-entity>
+							<a-entity animation__y="property:position.y;from:0.3;to:-0.8;dur:350;dir:normal;loop:true;easing:linear;">							 
+								<a-circle color="deepskyblue" radius="0.4" position="0 -1 -0.3" mixin="ff" face-colors="deepskyblue"
+									animation__z="property:object3D.position.z;from:-0.3;to:0.2;dir:alternate;loop:true;easing:linear;dur:800;"
+									animation__s="property:scale.y;from:0.2;to:1.0;dur:750;dir:normal;loop:true;easing:linear;">								
+								</a-circle>
+							</a-entity>
+							<a-entity animation__y="property:position.y;from:0.5;to:-0.75;dur:500;dir:normal;loop:true;easing:linear;">							 
+								<a-circle color="lightskyblue" radius="0.3" position="0 -1 -0.3" mixin="ff" face-colors="lightskyblue"
+									animation__z="property:object3D.position.z;from:-0.3;to:0.3;dir:alternate;loop:true;easing:linear;dur:1000;"
+									animation__s="property:scale.y;from:0.1;to:1;dur:500;dir:normal;loop:true;easing:linear;">								
+								</a-circle>
+							</a-entity>
+							<a-entity animation__y="property:position.y;from:0.4;to:-0.5;dur:750;dir:normal;loop:true;easing:linear;">							 
+								<a-circle color="deepskyblue" radius="0.2" position="0 -1 -0.3" mixin="ff" face-colors="deepskyblue"
+									animation__z="property:object3D.position.z;from:-0.2;to:0.3;dir:alternate;loop:true;easing:linear;dur:800;"
+									animation__s="property:scale.y;from:0.2;to:1.1;dur:750;dir:normal;loop:true;easing:linear;">								
+								</a-circle>
+							</a-entity>
+							<a-entity animation__y="property:position.y;from:0.4;to:-0.6;dur:600;dir:normal;loop:true;easing:linear;">							 
+								<a-circle color="dodgerblue" radius="0.2" position="0 -1 -0.3" mixin="ff" face-colors="dodgerblue"
+									animation__z="property:object3D.position.z;from:-0.2;to:0.3;dir:alternate;loop:true;easing:linear;dur:800;"
+									animation__s="property:scale.y;from:0.2;to:1.1;dur:750;dir:normal;loop:true;easing:linear;">								
+								</a-circle>
+							</a-entity>
+						</a-entity>
+					</a-entity>
+				  </a-entity>
+		</a-entity>
+		
+		
+   </a-scene>
+   <!--
+	/*game logic
+		at start 5 covoles appear, random rotation between 0 & +180 and at 10m
+		every 2-3 seconds, a covole gets pushed up
+		when the player looks at the covole, the fuse-cursor starts to shrink, the tap starts to increase in size
+		if shrink in time, hide covole from sight, that counts as a successful interaction
+		if not shrink in time, virus multiplies at every second unsuccessful pop down
+		
+		win conditions:
+			overall minimum 8 need to be removed to win the game, 5 initial and 3 other.
+			additionally, all active ones need to be removed
+		
+		spawnConditions
+			if minToWin is reached but active covoles remain, pop-down doesn't spawn new covoles
+			else, every second unsuccessful pop-down, a new one is spawned
+				spawn location is produced as closing rings towards the player
+		
+		//lose conditions:
+			//if all the ring-slots are exhausted and a new spawn is requested
+		
+		//on win/lose	
+			//spawn you win! banner, plus one virusParticles with yes
+			//on yes, restart game (could trigger reload of page)
+			on no, leave as is...
+		*/
+   -->
+   <script>
+		document.getElementById("ascene").addEventListener("loaded",function(){//when scene is ready, populate moles
+			gameInit();
+			initTapAnim();
+		});
+   </script>
+   
+ </body>
+</html>

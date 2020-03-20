@@ -1,3 +1,13 @@
+const _ACTIVE=0; //is animating
+const _WASHED=1; //hidden, needs to be set to _INACTV after making visible
+const _INACTV=2; //resting, pop-upable
+const _NOTIFY_WIN="WIN";
+const _NOTIFY_LOSS="LOSE";
+const _WASHED_MOLE=5;
+const _NO_MOR_ACTV=6;
+const _POPPED_DOWN=7;
+
+
 AFRAME.registerComponent('face-colors', {
         dependencies: ['geometry'],
         schema: {
@@ -44,6 +54,9 @@ function initVirusAnim(vir){//initialises the animation
 		vir.emit(vir.components.animation__fy.data.startEvents[0],false);
 	}
 }
+
+
+
 
 function updateVirusAnim(newVParticle,scaleTOX=1,scaleTOY=1){//updates the animation to specification
 	if(newVParticle.hasLoaded){//previously loaded
@@ -101,20 +114,16 @@ function spawnVirus(src,parentEl,posRandom=false){
 	console.log("DBG: spawnVirus>activated",spawn.id,whObj.particles.length);
 }
 
+
+
 function getObj(vir){
 	return {id:vir.id,state:_ACTIVE, isActive:chkState, node:vir};	
 }
 
-function virusFactory(src,scene,id){//called when new one needs to be added
-		let newPos = src.object3D.position;
-		
-		let newVParticle = document.createElement("a-entity");
-		newVParticle.setAttribute("id","cov"+(id>9?"":"0")+id);
-		newVParticle.setAttribute("mixin","fx fy washOut");
-		newVParticle.setAttribute("class","vParticle");
-		
+function virusFactory(id){//called when new one needs to be added	
+		let newVParticle = getEntity([{key:"id",val:"cov"+(id>9?"":"0")+id},{key:"mixin",val:"washOut"},{key:"class",val:"vParticle"}]);
 		newVParticle.appendChild(buildVirus());
-		scene.appendChild(newVParticle);
+		//parentEl.appendChild(newVParticle);
 		return newVParticle;
 }
 
@@ -123,13 +132,13 @@ function buildVirus(){//builds the AFrame version
 	cov.setAttribute("className","cov");
 	cov.setAttribute("mixin","merge Rxyz washOutV");
 	cov.setAttribute("material","opacity: 0.9; transparent: true");
-	cov.setAttribute("scale","0.03 0.03 0.03");
+	cov.setAttribute("scale","0.12 0.12 0.12");
 	let capNStalk='<a-entity class="capsideNStalk" rotation="0 0 0" mixin="merge">\n'+
 						'\t<a-entity mixin="ator" position="0 7 0"></a-entity>\n'+
 						'\t<a-entity mixin="acyl" position="0 6 0"></a-entity>\n'+
 						'\t<a-entity mixin="ator" position="0 -7 0"></a-entity>\n'+
 						'\t<a-entity mixin="acyl" position="0 -6 0"></a-entity>\n'+
-						'\t<a-entity mixin="asph" ></a-entity>\n'+
+						'\t<a-entity mixin="asph" class="capsid"></a-entity>\n'+
 					'</a-entity>\n';
 	let stalks="";
 	let i=0;
@@ -156,7 +165,10 @@ function buildStalk(yr,steps=4){//factored out step
 }
 
 function wob(cVal,rng){//wobble... central value cVal, range on either side rng
-	return cVal + Math.floor(Math.random()*2*rng+1)-rng;
+	return cVal + Math.floor(Math.random()*(rng+1))*(Math.random()<0.5?-1:1);
 	
 }
 
+function chkState(refState=_ACTIVE){
+	return this.state==refState;	
+}
