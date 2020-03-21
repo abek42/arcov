@@ -76,3 +76,11 @@ function wob(cVal,rng){//wobble... central value cVal, range on either side rng
 function chkState(refState=_ACTIVE){
 	return this.state==refState;	
 }
+
+function setState(refState){
+	if(this.state==_WASHED&&refState==_INACTV){
+		console.log("chk this");
+	}
+	console.log("DBG: setState",this.covoleNode.id,"transition:",mapState(this.state)+">"+mapState(refState));
+	this.state=refState;
+}
