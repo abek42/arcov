@@ -13,15 +13,6 @@ function gameInit(){
 		spawnCovole();
 		srCnt--;
 	}	
-	let covole=getEntity([{key:"id",val:"retry"},{key:"class",val:"retryCovole"},{key:"position",val:"0 0 0"},{key:"mixin",val:"popup"}]);
-	let hitBox = getEntity([{key:"geometry",val:"segments-radial:6"},{key:"position",val:"0 0 0"},{key:"radius",val:"0.85"},
-							{key:"class",val:"confirm"},{key:"material",val:"side:double;transparent:true;opacity:0.02"}],"a-cylinder");
-	let vP = virusFactory(100);
-
-	covole.appendChild(vP);
-	covole.appendChild(hitBox);
-	
-	document.getElementById("retryButton").appendChild(covole);
 	startTimer();
 }
 
@@ -32,7 +23,7 @@ function initTapAnim(){
 		tapWrap.emit("clickTap");
 		switch(evt.target.className){
 			case "capsid":
-				console.log("DBG: click>quash",evt.target.parentNode.id);
+				//console.log("DBG: click>quash",evt.target.parentNode.id);
 				quashCovole(evt.target); break;
 			case "confirm":
 				location.reload(); break;//restart game
@@ -56,10 +47,10 @@ function quashCovole(target){
 		let covole = game.covoles.find(cv=>cv.covoleNode.id==target.parentNode.id);
 		let preState = covole.state;
 		covole.setState(_WASHED); //we consider it quashed
-		console.log("DBG: quashCovole:",covole.covoleNode.id,"transition:",mapState(preState)+">"+mapState(covole.state));
-		console.log("DBG emit wOut>vP.child",covole.covoleNode.id);
+//		console.log("DBG: quashCovole:",covole.covoleNode.id,"transition:",mapState(preState)+">"+mapState(covole.state));
+//		console.log("DBG emit wOut>vP.child",covole.covoleNode.id);
 		covole.vPNode.children[0].emit("wOut"); //hide the particle, also covole will push down fast
-		console.log("DBG emit wOut>ring",covole.covoleNode.id);
+//		console.log("DBG emit wOut>ring",covole.covoleNode.id);
 		covole.ringNode.emit("wOut",false);//hide the covole ring
 		advanceGame({state:_WASHED_MOLE,prevCovole:covole.covoleNode.id});
 	}
@@ -83,7 +74,7 @@ function advanceGame(prev){
 						{st:_ACTIVE,cnt:game.covoles.filter(cf=>cf.isActive(_ACTIVE)).length},
 						{st:_WASHED,cnt:game.covoles.filter(cf=>cf.isActive(_WASHED)).length}];
 	
-	console.log("DBG: advanceGame: washed",game.washedCnt,covoleStates.map(cs=>mapState(cs.st)+": "+cs.cnt).join(", "));
+//	console.log("DBG: advanceGame: washed",game.washedCnt,covoleStates.map(cs=>mapState(cs.st)+": "+cs.cnt).join(", "));
 	
 	let unwashed = game.covoles.filter(cf=>!cf.isActive(_WASHED)).length;
 	if(game.washedCnt>=game.constants.minToWin){
@@ -128,29 +119,35 @@ function advanceGame(prev){
 }
 
 function displayDialog(notifyIntent){
-	alert("Situation: "+notifyIntent);
+//	alert("Situation: "+notifyIntent);
+	
 	console.log("TBD: displayDialog",notifyIntent);
 	
+
+	let covole=getEntity([{key:"id",val:"retry"},{key:"class",val:"retryCovole"},{key:"position",val:"0 0 0"},{key:"mixin",val:"popup"}]);
+	let hitBox = getEntity([{key:"geometry",val:"segments-radial:6"},{key:"position",val:"0 0 0"},{key:"radius",val:"0.85"},
+							{key:"class",val:"confirm"},{key:"material",val:"side:double;transparent:true;opacity:0.02"}],"a-cylinder");
+	let vP = virusFactory(100);
+
+	covole.appendChild(vP);
+	covole.appendChild(hitBox);
+	
+	document.getElementById("retryButton").appendChild(covole);
+	covole.emit("popup");
+	
+	
+	document.getElementById("retry").emit("showWin",false);	
+	document.getElementById(notifyIntent==_NOTIFY_WIN?"winText":"loseText").emit("showWin",false);
+	document.getElementById(notifyIntent==_NOTIFY_WIN?"winText":"loseText").setAttribute("position","4.95 3.65 0");	
+	
 }
-
-function testMode(){
-	for(let i=0;i<game.spawnRings.length;i++){
-		let sr = game.spawnRings[i];
-		for(let j=0;j<7;j++){
-			let sph=getEntity([{key:"position",val:(sr.d*2)+" 0 0"},{key:"color",val:"#"+(j*2)+""+(j*3)+""+(j*4)}],"a-sphere");
-			let rig=getEntity([{key:"rotation",val:"0 "+j*30+" 0"}],"a-entity");
-			rig.appendChild(sph);
-			scene.appendChild(rig);
-		}
-	}
-
-}
-
 
 
 function startTimer(){
 	game.si="GameTick";
 	game.siTick=setInterval(function(){ticker();},3000);
+	document.getElementById("bannerText1").emit("hideBan");
+	document.getElementById("bannerText2").emit("hideBan");
 }
 
 function ticker(){
@@ -163,7 +160,7 @@ function tPop(){
 	if(inactiveList.length>0){//pop a random one
 		let rnd=Math.floor(Math.random()*inactiveList.length);//only one which is not being animated
 		if(rnd>-1){
-			console.log("DBG: emit popup",inactiveList[rnd].covoleNode.id, "pre-emit",mapState(inactiveList[rnd].state) );
+			//console.log("DBG: emit popup",inactiveList[rnd].covoleNode.id, "pre-emit",mapState(inactiveList[rnd].state) );
 			inactiveList[rnd].setState(_ACTIVE);//animating
 			inactiveList[rnd].covoleNode.emit("popup");
 		}
@@ -211,7 +208,7 @@ function spawnCovole(avoid="NOTHING"){
 		
 		spare.vPNode.children[0].components.material.material.opacity=1;
 		spare.ringNode.components.material.material.opacity=1;
-		console.log("DBG: spawnCovole> using spare",spare.covoleNode.id,"transition",mapState(prevSt.state)+">"+mapState(spare.state));
+		//console.log("DBG: spawnCovole> using spare",spare.covoleNode.id,"transition",mapState(prevSt.state)+">"+mapState(spare.state));
 		//clearInterval(game.siTick);
 	}
 	else{//new spawn
@@ -275,11 +272,11 @@ function getEntity(attr,type="a-entity"){
 
 function processAnimFin(e){
 	let covole = game.covoles.find(cv=>cv.covoleNode.id==e.target.id);
-	console.log("DBG: processAnimFin",e.detail.name,e.target.id, covole?covole.covoleNode.id+" : "+mapState(covole.state):"NAVL");
+//	console.log("DBG: processAnimFin",e.detail.name,e.target.id, covole?covole.covoleNode.id+" : "+mapState(covole.state):"NAVL");
 	switch(e.detail.name){
 		case "animation__up"://if up animation is completed, then we start the dn animation (to occur after a delay)
 			if(e.target.className=="covole"){
-				console.log("DBG: emit popdn",covole.covoleNode.id);
+				//console.log("DBG: emit popdn",covole.covoleNode.id);
 				e.target.emit("popdn",false);
 			} 
 			break;
@@ -289,19 +286,19 @@ function processAnimFin(e){
 					covole.setState(_INACTV);
 					advanceGame({state:_POPPED_DOWN,prevCovole:covole.covoleNode.id});
 				}
-				else{
-					console.log("DBG: processAnimFine> dn>ignore late dn",covole.covoleNode.id,mapState(covole.state));
-				}				
+				//else{
+					//console.log("DBG: processAnimFine> dn>ignore late dn",covole.covoleNode.id,mapState(covole.state));
+				//}				
 			}			
 			break;
 		case "animation__dnfast":
-			if(e.target.className=="covole"){
-				console.log("DBG: processAnimFin>dnFast>noAction",covole.covoleNode.id,mapState(covole.state));				
-			}
+			//if(e.target.className=="covole"){
+				//console.log("DBG: processAnimFin>dnFast>noAction",covole.covoleNode.id,mapState(covole.state));				
+			//}
 			break;
 		case "animation__wo":
-			if(!covole) covole = game.covoles.find(cv=>cv.tldNode.id==e.target.id);
-			console.log("DBG: processAnimFin>animWO",covole.covoleNode.id,mapState(covole.state));
+			//if(!covole) covole = game.covoles.find(cv=>cv.tldNode.id==e.target.id);
+			//console.log("DBG: processAnimFin>animWO",covole.covoleNode.id,mapState(covole.state));
 			//covole.tldNode.setAttribute("visible",false);
 			break;
 		default:

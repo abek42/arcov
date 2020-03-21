@@ -78,9 +78,7 @@ function chkState(refState=_ACTIVE){
 }
 
 function setState(refState){
-	if(this.state==_WASHED&&refState==_INACTV){
-		console.log("chk this");
-	}
-	console.log("DBG: setState",this.covoleNode.id,"transition:",mapState(this.state)+">"+mapState(refState));
+	
+	//console.log("DBG: setState",this.covoleNode.id,"transition:",mapState(this.state)+">"+mapState(refState));
 	this.state=refState;
 }

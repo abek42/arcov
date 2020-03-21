@@ -9,7 +9,7 @@
    <script src="../js/covid19vro.js"></script>
 		
  </head>
- <a-scene background="color:azure" id="ascene"  debug stats>
+ <a-scene background="color:azure" id="ascene">
 		<a-assets>		
 			<a-mixin id="popup"
 				animation__up="property:position.y;to: 1;dur:750;dir:normal;loop:1;easing:easeOutSine;startEvents:popup;"
@@ -51,11 +51,19 @@
 			<a-mixin 
 				animation__rxyz="property:rotation;from:0 0 0;to:360 360 360;dur:5000;loop:true;dir:normal;easing:linear;" id="Rxyz">
 			</a-mixin>
-			<a-mixin id="washOutE" material="transparent:true;opacity:0.38"	
-				animation__ox="property:material.opacity;from:1;to:0.2;dur:1200;loop:1;dir:normal;easing:linear;startEvents:wOut;"				
+			<a-mixin id="washOutE" material="transparent:true;opacity:1.0"	
+				animation__ox="property:material.opacity;from:1;to:0.0;dur:1200;loop:1;dir:normal;easing:linear;startEvents:wOut;"				
 			>
 			</a-mixin>
-			<a-mixin id="config" text="align:center;side:double;wrapCount:60;width:8">
+			<a-mixin id="config" text="align:center;side:double;wrapCount:60;width:8;opacity:0.0;transparent:true;"
+				animation__ox="property:components.text.material.uniforms.opacity.value;from:0;to:1;dur:1200;loop:1;dir:normal;easing:linear;startEvents:showWin showLose;"				
+				animation__oy="property:components.text.material.uniforms.opacity.value;from:0;to:1;dur:2400;loop:1;dir:normal;easing:linear;startEvents:showWin, showLose;"				
+			>
+				
+			</a-mixin>
+			<a-mixin id="banTextOp"
+			animation__oy="property:components.text.material.uniforms.opacity.value;from:1;to:0;dur:4800;loop:1;dir:normal;easing:easeInSine;startEvents:hideBan;">
+			</a-mixin>
 		</a-assets>
 		<a-entity rotation="0 -10 0">
 			<a-cone position="5 0 0" color="red" rotation="-90 0 0" radius-bottom="0.3" height="1.2"></a-cone>
@@ -64,15 +72,24 @@
 			<a-cone position="5 0 0" color="green" rotation="90 0 0" radius-bottom="0.3" height="1.2"></a-cone>
 		</a-entity>
 	
-		<a-entity class="ground"  geometry="primitive: circle; segments:6; radius: 100" rotation="90 0 0"  position="0 -0.2 0" material="wireframe:true;side: double; color:#D2691E; opacity:1.0"></a-entity>
+		<a-entity class="ground"  geometry="primitive: circle; segments:6; radius: 100" rotation="90 0 0"  position="0 -0.2 0" material="wireframe:false;side: double; color:#D2691E; opacity:1.0"></a-entity>
 		<a-entity class="ring"  geometry="primitive: ring; radius-outer: 3;radius-inner:2.8" rotation="90 0 0"  position="0 -0.18 0" material="side: double; color:red; opacity:1.0"></a-entity>
 		
 		<a-entity class="banner"  rotation="0 90 0">
-			<a-sphere color="purple" position="5 3.6 0" radius="0.1" ></a-sphere>
-			<a-entity id="winText"  mixin="config" position="5.0 3.6 0" rotation="0 -90 0" text="value: WIN!\nYou defeated the corona virus by washing it off!;color:green;"></a-entity>	
-			<a-entity id="loseText" mixin="config" position="5.1 3.6 0" rotation="0 -90 0" text="value: You lost.\nYou can defeat the corona virus by washing it off!;color:red;"></a-entity>
-			<a-entity id="retry"    mixin="config" position="5.0 3.2 0" rotation="0 -90 0" text="value:Play again?;color:purple"></a-entity>
-			<a-entity id="retryButton" position="5 2.8 0" scale="0.4 0.4 0.4"></a-entity>
+			<a-entity id="bannerText1" mixin="banTextOp" position="5.2 4 0" rotation="0 -90 0" 
+				text="value:VRCov;align:center;side:double;wrapCount:6;width:6;opacity:1.0;transparent:true;color:red" ></a-entity>
+			<a-entity id="bannerText2" mixin="banTextOp" position="5.2 3.0 0" rotation="0 -90 0" 
+				text="value:Wash away the corona virus to win!\nDon't let it replicate or you lose!;align:center;side:double;wrapCount:40;width:8;opacity:1.0;transparent:true;color:seagreen"></a-entity>
+			<a-entity id="winText"  mixin="config" position="5.0 3.65 0" rotation="0 -90 0" text="value: WIN!\nYou defeated the corona virus by washing it off!;color:green;"></a-entity>	
+			<a-entity id="loseText" mixin="config" position="5.1 3.65 0" rotation="0 -90 0" text="value: You lost.\nYou can defeat the corona virus by washing it off!;color:red;"></a-entity>
+			<a-entity id="retry"    mixin="config" position="5.0 3.25 0" rotation="0 -90 0" text="value:Play again?;color:purple"></a-entity>
+			<a-entity id="retryButton" position="5 2.3 0" scale="0.4 0.4 0.4"></a-entity>
+		</a-entity>
+		<a-entity id="lookLeft" rotation="0 -25 0">
+			<a-entity id="winText"  mixin="config" position="5.0 0.5 0" rotation="0 -90 0" text="value: Virus will appear to your left;color:blue;opacity:1"></a-entity>	
+		</a-entity>
+		<a-entity id="lookRight" rotation="0 205 0">
+			<a-entity id="winText"  mixin="config" position="5.0 0.5 0" rotation="0 -90 0" text="value: Virus will appear to your right;color:blue;opacity:1"></a-entity>	
 		</a-entity>
 		<a-entity id="camera" camera="active: true" look-controls wasd-controls position="0 1.6 0">
 			<a-entity id="cursor" raycaster="objects: .confirm, .capsid"
