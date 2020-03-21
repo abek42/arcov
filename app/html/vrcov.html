@@ -4,16 +4,17 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VRCov</title>
    <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
-   <script src="https://unpkg.com/aframe-geometry-merger-component/dist/aframe-geometry-merger-component.min.js"></script>
+   <script src="../js/aframe-geometry-merger-component.min.js"></script>
    <script src="../js/vrcovLogic.js"></script>
-   <script src="../js/covid19vr.js"></script>
+   <script src="../js/covid19vro.js"></script>
 		
  </head>
  <a-scene background="color:azure" id="ascene"  debug stats>
 		<a-assets>		
 			<a-mixin id="popup"
 				animation__up="property:position.y;to: 1;dur:750;dir:normal;loop:1;easing:easeOutSine;startEvents:popup;"
-				animation__dn="property:position.y;to:-2;dur:850;dir:normal;loop:1;easing:easeInSine; startEvents:popdn;delay:2500;"
+				animation__dn="property:position.y;to:-2;dur:850;dir:normal;loop:1;easing:easeInSine; startEvents:popdn;delay:2500;pauseEvents:wOut"
+				animation__dnFast="property:position.y;to:-2;dur:50;dir:normal;loop:1;easing:easeOutSine;startEvents:wOut;"
 			>
 			</a-mixin>
 			<a-mixin geometry-merger="preserveOriginal: false" material="vertexColors: face" id="mergeTap">
@@ -50,12 +51,17 @@
 			<a-mixin 
 				animation__rxyz="property:rotation;from:0 0 0;to:360 360 360;dur:5000;loop:true;dir:normal;easing:linear;" id="Rxyz">
 			</a-mixin>
-			<a-mixin transparent="true"	
-				animation__wo="property:material.opacity;to:0.0;loop:1;dur:1000;easing:easeInSine;startEvents:wOut;pauseEvents:pauseWash;" 
-				id="washOutE"
+			<a-mixin id="washOutE" material="transparent:true;opacity:0.38"	
+				animation__ox="property:material.opacity;from:1;to:0;dur:1200;loop:1;dir:normal;easing:linear;startEvents:wOut;"				
 			>
+			</a-mixin>
 		</a-assets>
-		
+		<a-entity rotation="0 -10 0">
+			<a-cone position="5 0 0" color="red" rotation="-90 0 0" radius-bottom="0.3" height="1.2"></a-cone>
+		</a-entity>
+		<a-entity rotation="0 190 0">
+			<a-cone position="5 0 0" color="green" rotation="90 0 0" radius-bottom="0.3" height="1.2"></a-cone>
+		</a-entity>
 	
 		<a-entity class="ground"  geometry="primitive: circle; segments:6; radius: 100" rotation="90 0 0"  position="0 -0.2 0" material="wireframe:true;side: double; color:#D2691E; opacity:1.0"></a-entity>
 		<a-entity class="ring"  geometry="primitive: ring; radius-outer: 3;radius-inner:2.8" rotation="90 0 0"  position="0 -0.18 0" material="side: double; color:red; opacity:1.0"></a-entity>
@@ -67,8 +73,7 @@
 				  cursor="fuse: true;"
 				  material="color: black; shader: flat; transparent:true;opacity:0.2"
 				  position="0 0 -2"
-				  geometry="primitive: ring;radiusInner: 0.16; radiusOuter: 0.24;">
-				  
+				  geometry="primitive: ring;radiusInner: 0.16; radiusOuter: 0.24;">				  
 			</a-entity>
 			<a-entity id="tap" rotation="0 0 0" position="0 0 -2" scale="0.12 0.12 0.12">
 					<a-entity id="tapWrap"
