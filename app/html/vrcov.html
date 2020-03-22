@@ -94,7 +94,7 @@
 		<a-entity id="camera" camera="active: true" look-controls wasd-controls position="0 1.6 0">
 			<a-entity id="cursor" raycaster="objects: .confirm, .capsid"
 				  animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
-				  animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1000; from: 1 1 1; to: 0.1 0.1 0.1"
+				  animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 500; from: 1 1 1; to: 0.1 0.1 0.1"
 				  animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
 				  cursor="fuse: true;"
 				  material="color: black; shader: flat; transparent:true;opacity:0.2"
@@ -104,7 +104,7 @@
 			<a-entity id="tap" rotation="0 0 0" position="0 0 -2" scale="0.12 0.12 0.12">
 					<a-entity id="tapWrap"
 						animation__click="property: scale; startEvents: clickTap; easing: easeInCubic; dur: 150; from: 1.4 1.4 1.4; to: 1 1 1"
-						animation__fusing="property: scale; startEvents: fusingTap; easing: easeInCubic; dur: 1000; from: 1 1 1; to: 1.4 1.4 1.4"
+						animation__fusing="property: scale; startEvents: fusingTap; easing: easeInCubic; dur: 500; from: 1 1 1; to: 1.4 1.4 1.4"
 						animation__mouseleave="property: scale; startEvents: mouseleaveTap; easing: easeInCubic; dur: 500; to: 1 1 1"
 					>
 						<a-entity class="tap_body" >
