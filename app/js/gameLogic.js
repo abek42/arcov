@@ -22,7 +22,7 @@ function chkState(refState=_ACTIVE){
 }
 
 let whObj = {total:1,particles:[],washed:0,firstRun:true,game:"washHands",banner:false,trackTick:-1,
-				tickInterval:12000,tick:-1,tracking:false,tickFunction:washTick,hitFunction:washHit,
+				tickInterval:10000,tick:-1,tracking:false,tickFunction:washTick,hitFunction:washHit,
 				constants:{activeMax:8,washMin:10,activeMin:3},
 				markerHnds:{}};
 function initGame(task){
