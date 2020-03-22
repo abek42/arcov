@@ -69,13 +69,13 @@ function advanceGame(prev){
 		default:
 			console.log("TBD: advanceGame:state > ",prevState);
 	}
-	//debug statements next two
+	/* /debug statements next two
 	let covoleStates = [{st:_INACTV,cnt:game.covoles.filter(cf=>cf.isActive(_INACTV)).length},
 						{st:_ACTIVE,cnt:game.covoles.filter(cf=>cf.isActive(_ACTIVE)).length},
 						{st:_WASHED,cnt:game.covoles.filter(cf=>cf.isActive(_WASHED)).length}];
 	
-//	console.log("DBG: advanceGame: washed",game.washedCnt,covoleStates.map(cs=>mapState(cs.st)+": "+cs.cnt).join(", "));
-	
+	console.log("DBG: advanceGame: washed",game.washedCnt,covoleStates.map(cs=>mapState(cs.st)+": "+cs.cnt).join(", "));
+	*/
 	let unwashed = game.covoles.filter(cf=>!cf.isActive(_WASHED)).length;
 	if(game.washedCnt>=game.constants.minToWin){
 		if(game.siTick>0){
