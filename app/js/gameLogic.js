@@ -165,7 +165,9 @@ function washTick(){
 	if(toWin>active){
 		let src=whObj.particles.find(p=>p.isActive).node;
 		//console.log("DBG: processHit>spawn new from", src.id);
-		spawnVirus(src,src.parentElement,false); 
+		if(whObj.tracking){//only if tracking
+			spawnVirus(src,src.parentElement,false); 
+		}
 	}
 }
 
