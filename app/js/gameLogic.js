@@ -23,7 +23,8 @@ function chkState(refState=_ACTIVE){
 
 let whObj = {total:1,particles:[],washed:0,firstRun:true,game:"washHands",banner:false,trackTick:-1,
 				tickInterval:12000,tick:-1,tracking:false,tickFunction:washTick,hitFunction:washHit,
-				constants:{activeMax:8,washMin:10,activeMin:3}};
+				constants:{activeMax:8,washMin:10,activeMin:3},
+				markerHnds:{}};
 function initGame(task){
 	//hide all first
 	let gameScenes = document.getElementsByClassName("game_scene");
@@ -59,21 +60,26 @@ function markerHandler(){
 		}
 		currGameObj.tracking=true;
 		if(currGameObj.trackTick<0){
+			currGameObj.markerHnds={tooClose:document.getElementById("tooClose"),tooFar:document.getElementById("tooFar"),
+									noMarker:document.getElementById("noMarker"), markerHnd:document.querySelector("a-marker")};
 			currGameObj.trackTick=setInterval(function(){
-				let markerPos = document.querySelector("a-marker").getAttribute("position");
+				let markerPos = currGameObj.markerHnds.markerHnd.object3D.position;//.getAttribute("position");
 			//	console.log("DBG: markerPos",[markerPos.x, markerPos.y, markerPos.z].join(", "));
 				if(markerPos.z<-9){
-					document.getElementById("tooFar").setAttribute("visible",true);
-					document.getElementById("tooClose").setAttribute("visible",false);
+					currGameObj.markerHnds.tooFar.setAttribute("visible",true);
+					currGameObj.markerHnds.tooClose.setAttribute("visible",false);
+					currGameObj.markerHnds.noMarker.setAttribute("visible",false);
 				}
 				else{
 					if(markerPos.z>-5){
-						document.getElementById("tooFar").setAttribute("visible",false);
-						document.getElementById("tooClose").setAttribute("visible",true);
+						currGameObj.markerHnds.tooFar.setAttribute("visible",false);
+						currGameObj.markerHnds.tooClose.setAttribute("visible",true);
+						currGameObj.markerHnds.noMarker.setAttribute("visible",false);
 					}	
 					else{
-						document.getElementById("tooFar").setAttribute("visible",false);
-						document.getElementById("tooClose").setAttribute("visible",false);
+						currGameObj.markerHnds.tooFar.setAttribute("visible",false);
+						currGameObj.markerHnds.tooClose.setAttribute("visible",false);
+						currGameObj.markerHnds.noMarker.setAttribute("visible",false);
 					}
 				}
 			},250);
@@ -81,10 +87,12 @@ function markerHandler(){
 		//otherwise the game state takes care of itself
 	});
 	document.addEventListener('markerLost',function(){
+		//console.log("DBG: mLost",currGameObj!==null);
 		if(currGameObj!==null){
 			currGameObj.tracking=false;
-			document.getElementById("tooFar").setAttribute("visible",false);
-			document.getElementById("tooClose").setAttribute("visible",false);
+			currGameObj.markerHnds.tooFar.setAttribute("visible",false);
+			currGameObj.markerHnds.tooClose.setAttribute("visible",false);
+			currGameObj.markerHnds.noMarker.setAttribute("visible",true);
 			clearInterval(currGameObj.trackTick);
 			currGameObj.trackTick=-1;
 		}
