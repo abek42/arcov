@@ -24,7 +24,7 @@ function initVirusAnim(vir){//initialises the animation
 		});		
 	}
 	else{
-		console.log("DBG: actVir(new):",vir.id);
+//		console.log("DBG: actVir(new):",vir.id);
 		vir.addEventListener('animationcomplete',function(e){
 			let animComp = e.detail.name;
 			let entity   = e.target;
@@ -34,7 +34,7 @@ function initVirusAnim(vir){//initialises the animation
 				//console.log("DBG: evt>anComp>",entity.id,animComp,"reset dir:",entity.components[animComp].data.to);
 			}
 			else{
-				console.log("DBG: evt>anComp>fall complete",entity.id);
+//				console.log("DBG: evt>anComp>fall complete",entity.id);
 				whObj.particles.find(p=>p.id==entity.id).state=_INACTV;
 				entity.children[0].components.material.material.opacity=1;//reset for future use
 				entity.setAttribute("visible",false); //hide it once it has completed its fall
@@ -76,7 +76,7 @@ function spawnVirus(src,parentEl,posRandom=false){
 		let tmp = pos0.split(" ");
 		pos0 = [wob(Math.floor(tmp[0]*1),4),wob(Math.floor(tmp[1]*1),4),tmp[2]].join(" ");
 	}
-	console.log("DBG: spawnVirus> posZ:",pos0.split(" ")[2],"src",srcPos.z);
+//	console.log("DBG: spawnVirus> posZ:",pos0.split(" ")[2],"src",srcPos.z);
 	//see if we can find an old one
 	let spawnIdx=whObj.particles.findIndex(inv=>inv.isActive(_INACTV));
 	let spawn=null;
@@ -98,7 +98,7 @@ function spawnVirus(src,parentEl,posRandom=false){
 	
 	//now we have a proper spawn ready to push
 	
-	console.log("DBG: spawnVirus>activated",spawn.id,whObj.particles.length);
+//	console.log("DBG: spawnVirus>activated",spawn.id,whObj.particles.length);
 }
 
 function getObj(vir){

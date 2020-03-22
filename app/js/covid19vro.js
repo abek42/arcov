@@ -35,7 +35,7 @@ function buildVirus(){//builds the AFrame version
 	let cov = document.createElement("a-entity");
 	cov.setAttribute("className","cov");
 	cov.setAttribute("mixin","merge Rxyz washOutE");
-	cov.setAttribute("material","opacity: 0.9; transparent: true");
+	cov.setAttribute("material","opacity: 1.0; transparent: true");
 	cov.setAttribute("scale","0.12 0.12 0.12");
 	let capNStalk='<a-entity class="capsideNStalk" rotation="0 0 0" mixin="merge">\n'+
 						'\t<a-entity mixin="ator" position="0 7 0"></a-entity>\n'+

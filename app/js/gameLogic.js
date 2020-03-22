@@ -21,8 +21,8 @@ function chkState(refState=_ACTIVE){
 	return this.state==refState;	
 }
 
-let whObj = {total:1,particles:[],washed:0,firstRun:true,game:"washHands",
-				tickInterval:10000,tick:-1,tracking:false,tickFunction:washTick,hitFunction:washHit,
+let whObj = {total:1,particles:[],washed:0,firstRun:true,game:"washHands",banner:false,trackTick:-1,
+				tickInterval:12000,tick:-1,tracking:false,tickFunction:washTick,hitFunction:washHit,
 				constants:{activeMax:8,washMin:10,activeMin:3}};
 function initGame(task){
 	//hide all first
@@ -54,12 +54,40 @@ Banner: Wash your hands with soap, for at least 20 seconds
 */
 function markerHandler(){
 	document.addEventListener('markerFound',function(){//every time marker is found, this event is triggered
-		if(currGameObj===null) activateGame();
+		if(currGameObj===null||!currGameObj.tracking){
+			activateGame();
+		}
 		currGameObj.tracking=true;
+		if(currGameObj.trackTick<0){
+			currGameObj.trackTick=setInterval(function(){
+				let markerPos = document.querySelector("a-marker").getAttribute("position");
+			//	console.log("DBG: markerPos",[markerPos.x, markerPos.y, markerPos.z].join(", "));
+				if(markerPos.z<-9){
+					document.getElementById("tooFar").setAttribute("visible",true);
+					document.getElementById("tooClose").setAttribute("visible",false);
+				}
+				else{
+					if(markerPos.z>-5){
+						document.getElementById("tooFar").setAttribute("visible",false);
+						document.getElementById("tooClose").setAttribute("visible",true);
+					}	
+					else{
+						document.getElementById("tooFar").setAttribute("visible",false);
+						document.getElementById("tooClose").setAttribute("visible",false);
+					}
+				}
+			},250);
+		}
 		//otherwise the game state takes care of itself
 	});
 	document.addEventListener('markerLost',function(){
-		if(currGameObj!==null) currGameObj.tracking=false;
+		if(currGameObj!==null){
+			currGameObj.tracking=false;
+			document.getElementById("tooFar").setAttribute("visible",false);
+			document.getElementById("tooClose").setAttribute("visible",false);
+			clearInterval(currGameObj.trackTick);
+			currGameObj.trackTick=-1;
+		}
 	});
 }
 
@@ -73,7 +101,10 @@ function activateGame(){
 	if(currGameObj.tick<0){//not ticking
 		currGameObj.tick=setInterval(function(){
 			currGameObj.tickFunction();
-		},currGameObj.tickInterval)
+		},currGameObj.tickInterval);
+		console.log("DBG: activeGame>hideBan");
+		document.getElementById("bannerText1").emit("hideBan");
+		document.getElementById("bannerText2").emit("hideBan");
 	}
 }
 
@@ -111,21 +142,21 @@ function washTick(){
 	let active = whObj.particles.reduce((acc,particle)=>acc+(particle.isActive()?1:0),0);
 	let toWin = whObj.constants.washMin - whObj.washed;
 	
-	console.log("DBG: processTick","total:",whObj.particles.length,"active:",active,"washed:",whObj.washed,"toWin:",toWin);
+//	console.log("DBG: processTick","total:",whObj.particles.length,"active:",active,"washed:",whObj.washed,"toWin:",toWin);
 	
 	if(active>=whObj.constants.activeMax){
-		notifyUser(_NOTIFY_LOSS);
+		displayDialog(_NOTIFY_LOSS);
 		return;
 	}
 	
 	if(toWin<=0&&active<1){
-		notifyUser(_NOTIFY_WIN);
+		displayDialog(_NOTIFY_WIN);
 		return;
 	}
 	
 	if(toWin>active){
 		let src=whObj.particles.find(p=>p.isActive).node;
-		console.log("DBG: processHit>spawn new from", src.id);
+		//console.log("DBG: processHit>spawn new from", src.id);
 		spawnVirus(src,src.parentElement,false); 
 	}
 }
@@ -138,7 +169,7 @@ function washHit(particle){//only triggered when reducing count
 			3.1 If fewer than minActive remain, 
 				3.1.1 If toWin count is more than minActive, spawn new particle
 	*/
-	console.log("DBG: washHit>process",particle.id);
+//	console.log("DBG: washHit>process",particle.id);
 	
 	//move it from active to inactive, update state to indicate new washed one
 	let p = whObj.particles.find(p=>p.id==particle.id);
@@ -160,20 +191,42 @@ function washHit(particle){//only triggered when reducing count
 			if(active<toWin){//if all active particles are washed, we will still not reach win state
 				//find an active particle and use it to generate a new spawn
 				let src=whObj.particles.find(p=>(p.isActive())).node;
-				console.log("DBG: processHit>spawn new from", src.id);
+//				console.log("DBG: processHit>spawn new from", src.id);
 				spawnVirus(src,src.parentElement,false);				
 			}		
 		}
 	}
 	else{//min washed value reached or exceeded
 		//wait till all active particles are removed
-		if(active==0) notifyUser(_NOTIFY_WIN);		
+		if(active==0) displayDialog(_NOTIFY_WIN);		
 	}
 }
 
-function notifyUser(state){
-	console.log("TBD: notifyUser",state);
-	if(state==_NOTIFY_LOSS||state==_NOTIFY_WIN){
-		clearInterval(currGameObj.tick);
-	}
+
+function displayDialog(notifyIntent){
+//	alert("Situation: "+notifyIntent);
+	
+	console.log("TBD: displayDialog",notifyIntent);
+	clearInterval(currGameObj.tick);
+
+	whObj.particles[0].state=_ACTIVE; //set it to active state
+	spawn = whObj.particles[0].node;//.splice(spawnIdx,1)[0];
+	spawn.setAttribute("visible",true); //make the structure visible
+	spawn.setAttribute('position',"5.2 0 0");
+	spawn.emit("pause");
+	
+	document.getElementById(notifyIntent==_NOTIFY_WIN?"winText":"loseText").emit("showWin",false);
+	document.getElementById(notifyIntent==_NOTIFY_WIN?"winText":"loseText").setAttribute("position","4.95 0.65 0");	
+	
 }
+
+function getEntity(attr,type="a-entity"){
+	let entity = document.createElement(type);
+	for(let i=0;i<attr.length;i++){
+		entity.setAttribute(attr[i].key,attr[i].val);		
+	}
+	//console.log("gE",entity);
+	return entity;	
+}
+
+

@@ -92,6 +92,15 @@
 			>
 			
 			</a-mixin>
+			<a-mixin id="config" text="align:center;side:double;wrapCount:60;width:5;opacity:0.0;transparent:true;"
+				animation__ox="property:components.text.material.uniforms.opacity.value;from:0;to:1;dur:1200;loop:1;dir:normal;easing:linear;startEvents:showWin showLose;"				
+				animation__oy="property:components.text.material.uniforms.opacity.value;from:0;to:1;dur:2400;loop:1;dir:normal;easing:linear;startEvents:showWin, showLose;"				
+			>
+				
+			</a-mixin>
+			<a-mixin id="banTextOp"
+				animation__oy="property:components.text.material.uniforms.opacity.value;from:1;to:0;dur:4800;loop:1;dir:normal;easing:easeInSine;startEvents:hideBan;">
+			</a-mixin>
 		</a-assets>
 		<!--a-marker preset='hiro'>
 		  <!-- here define the content to display on top of the marker -- >
@@ -168,14 +177,26 @@
 		<a-entity camera position="0 0 0">
 			<a-entity class="game_scene" id="game_washHands">
 			<!-- debug planes -->
-				<a-plane color="blue" height="40" width="2" rotation="0 -90 0" position="-5 0 -10" material="side: double;"></a-plane>
+				<!--a-plane color="blue" height="40" width="2" rotation="0 -90 0" position="-5 0 -10" material="side: double;"></a-plane>
 				<a-plane color="blue" height="40" width="2" rotation="0 -90 0" position=" 5 0 -10" material="side: double;"></a-plane>
 				<a-plane color="#8C8" height="2" width="40" rotation="-90 0 0" position=" 0  -3 -10" material="side: double;"></a-plane>
-				<a-plane color="#8C8" height="2" width="40" rotation="-90 0 0" position=" 0   3 -10" material="side: double;"></a-plane>
+				<a-plane color="#8C8" height="2" width="40" rotation="-90 0 0" position=" 0   3 -10" material="side: double;"></a-plane-->
 			
 				<!-- nest all the entities that float within it's range-->
 				<a-entity id="cov00" class="vParticle" position="2 2 -7" mixin="fx fy washOut">
 				</a-entity>			
+			</a-entity>
+			<a-entity class="banner"  rotation="0 90 0">
+				<a-entity id="bannerText1" mixin="banTextOp" position="5.2 0.5 0" rotation="0 -90 0" 
+					text="value:ARCov;align:center;side:double;wrapCount:6;width:3;opacity:1.0;transparent:true;color:red" ></a-entity>
+				<a-entity id="bannerText2" mixin="banTextOp" position="5.2 0.0 0" rotation="0 -90 0" 
+					text="value:Wash away the corona virus to win!\nDon't let it replicate or you lose!;align:center;side:double;wrapCount:40;width:4;opacity:1.0;transparent:true;color:lime"></a-entity>
+				<a-entity id="winText"  mixin="config" position="5.0 0.65 0" rotation="0 -90 0" text="value: WIN!\nYou defeated the corona virus by washing it off!;color:green;"></a-entity>	
+				<a-entity id="loseText" mixin="config" position="5.1 0.65 0" rotation="0 -90 0" text="value: You lost.\nYou can defeat the corona virus by washing it off!;color:red;"></a-entity>
+				<a-entity id="retry"    mixin="config" position="5.0 0.25 0" rotation="0 -90 0" text="value:Play again?;color:purple"></a-entity>
+				<a-entity id="tooFar"    mixin="config" position="5.05 -0.85 0" rotation="0 -90 0" visible="false" text="value:Too far!;color:goldenrod;opacity:1.0;" ></a-entity>
+				<a-entity id="tooClose"  mixin="config" position="5.0 -0.85 0"  rotation="0 -90 0" visible="false" text="value:Too close!;color:goldenrod;opacity:1.0;" ></a-entity>
+				<a-entity id="retryButton" position="5 -0.3 0" scale="0.4 0.4 0.4"></a-entity>
 			</a-entity>
 		</a-entity>
    </a-scene>
@@ -183,7 +204,7 @@
 		document.getElementById("ascene").addEventListener('loaded',function(){
 			initGame('washHands');
 			markerHandler();
-			activateGame();
+			//activateGame();
 		});
 		
 		document.getElementById("ascene").addEventListener('click',function(){

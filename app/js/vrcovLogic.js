@@ -241,7 +241,7 @@ function covoleFactory(id,rY,dX,gold=false){
 	
 	let ring=getEntity([{key:"color", val:gold?"red":"green"},{key:"open-ended", val:"true"},{key:"position", val:"0 -0.3 0"},
 						{key:"mixin",val:"washOutE"},{key:"material", val:"side:double"}],"a-cylinder");
-	let covole=getEntity([{key:"id",val:"covole"+(id>9?"":"0")+id},{key:"class",val:"covole"},{key:"position",val:"0 -1 0"},{key:"mixin",val:"popup"}]);
+	let covole=getEntity([{key:"id",val:"covole"+(id>9?"":"0")+id},{key:"class",val:"covole"},{key:"position",val:"0 -1.2 0"},{key:"mixin",val:"popup"}]);
 	let hitBox = getEntity([{key:"geometry",val:"segments-radial:6"},{key:"position",val:"0 0 0"},{key:"radius",val:"0.85"},
 							{key:"class",val:"capsid"},{key:"material",val:"side:double;transparent:true;opacity:0.02"}],"a-cylinder");
 	let vP = virusFactory(id);
