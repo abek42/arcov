@@ -37,7 +37,8 @@
 		border:2px solid #034488;
 		border-radius:5px;
 		margin: 5px;
-		align-items:center;
+		align-items:stretch;
+		justify-content:space-around;
 		flex-wrap:wrap;
 	}
 	.wrap3{
@@ -49,7 +50,12 @@
 		border-radius:5px;
 		margin: 5px 0px;
 		align-items:center;
-		width:100%;
+		min-width:300px;
+	}
+	@media only screen and (min-width: 800px) {
+	  .wrap3 {
+		width:400px;
+	  }
 	}
 	.gameTextI,.gameTextR {
 		background: #edece8;
@@ -110,16 +116,16 @@
 <p class="intro">
 	This page started out with a simple question:<br> <i> How do you explain and promote the two initial protective guidelines ("Wash Hands" and "Avoid Touching Face") to a child, like my 4yr old nephew?</i><br>
 	I teach WebXR and Game Design, so it seemed like a good idea to apply those concepts into practice.<br>
-	The outcome is two prototype games which could explain the first (and maybe the second) guideline through practice.
+	The outcome is two prototype games which could explain the first guideline through practice.
 </p>
 </div>
 <div id="wrapGames" class="wrap2">
 	<div id="wrapARCoV" class="wrap3">
 		<span class="gameTitle">ARCoV-Wash</span>
-		<span class="gameIW imgIW">
+		<span class="gameIW imgIW"   style="text-align: center;">
 			<a href="./arcov.html" class="noDecor">
-				<img class="gameImg" src="../assets/gifs/arcov.gif">
-				</img>
+				<img class="gameImg" src="../assets/gifs/arcov.gif"></img><br>
+				<strong>Play!</strong>
 			</a>
 		</span>
 		<span class="gameTextI">
@@ -147,7 +153,8 @@
 		<span class="gameTitle">VRCoV</span>
 		<span class="gameIW"  style="text-align: center;">
 			<a href="./vrcov.html" class="noDecor">
-				<img class="gameImg" src="../assets/gifs/vrcov.gif"></img>
+				<img class="gameImg" src="../assets/gifs/vrcov.gif"></img><br>
+				<strong>Play!</strong>
 			</a>
 		</span>
 		<span class="gameTextI">
@@ -159,8 +166,8 @@
 			To win, kill off all the particles before their number reaches a critical mass.
 		</span>
 		<span class="gameTextS">
-			&#9210; Double-tap to enter full-screen mode.<br>
-			&#9210; If Google-Cardboard type harness is available, use the "VR" button to enter stereoscopic mode.<br>
+			&#9210; Use landscape orientation to play<br>
+			&#9210; If Google-Cardboard type harness is available, use the "VR" button to enter stereoscopic mode<br>
 			&#9210; Move gaze-reticle to where virus particle appears and hold gaze to kill it<br>
 		</span>
 		<span class="gameTextR"> 

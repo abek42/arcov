@@ -116,7 +116,7 @@
 						<a-sphere id="sphere" position="0 0 0" scale="1 1 1" radius="0.8" color="goldenrod" ></a-sphere>	
 				</a-entity-->	
 				<a-entity class="marker_washHands" position="0 0 0" visible="true" scale="0.25 0.25 0.25">
-					<a-entity id="tap" class="collider" rotation="0 0 0"  aabb-collider="objects: .vParticle;debug:false;enabled:false;">
+					<a-entity id="tap" class="collider" rotation="0 0 0"  aabb-collider="objects: .vParticle, .vReplay;debug:false;enabled:false;">
 						<a-entity class="tap_body" mixin="merge">
 							<a-entity mixin="tcyl" geometry="height:1.57"></a-entity>
 							<a-entity mixin="tcyl" position="0 0.75 -0.5" rotation="90 0 0" 								   ></a-entity>

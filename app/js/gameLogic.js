@@ -179,7 +179,10 @@ function washHit(particle){//only triggered when reducing count
 			3.1 If fewer than minActive remain, 
 				3.1.1 If toWin count is more than minActive, spawn new particle
 	*/
-//	console.log("DBG: washHit>process",particle.id);
+	console.log("DBG: washHit>process",particle.id,particle.className);
+	if(particle.className=="vReplay"){
+		location.reload();
+	}
 	
 	//move it from active to inactive, update state to indicate new washed one
 	let p = whObj.particles.find(p=>p.id==particle.id);
@@ -219,15 +222,17 @@ function displayDialog(notifyIntent){
 	console.log("TBD: displayDialog",notifyIntent);
 	clearInterval(currGameObj.tick);
 
+	//spawn = virusFactory({object3D:{position:{x:}}},scene,id);
 	whObj.particles[0].state=_ACTIVE; //set it to active state
 	spawn = whObj.particles[0].node;//.splice(spawnIdx,1)[0];
 	spawn.setAttribute("visible",true); //make the structure visible
-	spawn.setAttribute('position',"5.2 0 0");
+	spawn.setAttribute('position',"0 -0.25 -5");
+	spawn.setAttribute('class','vReplay');
 	spawn.emit("pause");
 	
 	document.getElementById(notifyIntent==_NOTIFY_WIN?"winText":"loseText").emit("showWin",false);
 	document.getElementById(notifyIntent==_NOTIFY_WIN?"winText":"loseText").setAttribute("position","4.95 0.65 0");	
-	
+	document.getElementById("retry").emit("showWin",false);
 }
 
 function getEntity(attr,type="a-entity"){
