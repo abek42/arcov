@@ -105,7 +105,7 @@
 	</style>
 </head>
 <body onload="setDebugDiv();">
-<div id="debug">
+<div id="debug" style="display:none;">
 	<input type="button" onclick="location.reload();" value="Reload"/>
 	<span id="reload">ERROR</span>
 
@@ -116,12 +116,37 @@
 <p class="intro">
 	This page started out with a simple question:<br> <i> How do you explain and promote the two initial protective guidelines ("Wash Hands" and "Avoid Touching Face") to a child, like my 4yr old nephew?</i><br>
 	I teach WebXR and Game Design, so it seemed like a good idea to apply those concepts into practice.<br>
-	The outcome is two prototype games which could explain the first guideline through practice.
+	Here are two prototype games which could explain the first guideline through interaction.
 </p>
 </div>
 <div id="wrapGames" class="wrap2">
+	<div id="wrapVRCoV" class="wrap3">
+		<span class="gameTitle">VRCoV</span>
+		<span class="gameIW"  style="text-align: center;">
+			<a href="./vrcov.html" class="noDecor">
+				<img class="gameImg" src="../assets/gifs/vrcov.gif"></img><br>
+				<strong>Play!</strong>
+			</a>
+		</span>
+		<span class="gameTextI">
+			VRCoV is an Virtual Reality game where you wash off the Covid-19 virus by using a gaze-controlled water-tap.<br> 
+			The idea links the use of a running water-tap with the destruction of the virus.<br>
+			Move the smartphone to look around and hold the gaze-reticle on virus particle till it gets killed and before it disappears.<br>
+			The virus particles will periodically replicate.<br>
+			To win, kill off all the particles before their number reaches a critical mass.
+		</span>
+		<span class="gameTextS">
+			&#9210; Use landscape orientation to play<br>
+			&#9210; If Google-Cardboard type harness is available, use the "VR" button to enter stereoscopic mode<br>
+			&#9210; Move water-tap/gaze-reticle to where virus particle appears and hold gaze to kill it<br>
+		</span>
+		<span class="gameTextR"> 
+			<em>Requirements</em>: WebGL-enabled smartphone and browser (certain Apple versions and older smartphones may not work).<br>
+			<em>Extras</em>: Google Cardboard Harness
+		</span>
+	</div>
 	<div id="wrapARCoV" class="wrap3">
-		<span class="gameTitle">ARCoV-Wash</span>
+		<span class="gameTitle">ARCoV</span>
 		<span class="gameIW imgIW"   style="text-align: center;">
 			<a href="./arcov.html" class="noDecor">
 				<img class="gameImg" src="../assets/gifs/arcov.gif"></img><br>
@@ -129,9 +154,9 @@
 			</a>
 		</span>
 		<span class="gameTextI">
-			ARCoV-Wash is an Augmented Reality Game using a marker for in-game interaction.<br> 
+			ARCoV is an Augmented Reality game where you kill off the Covid-19 virus by washing.<br> 
 			The idea links the use of a running water-tap with the destruction of the virus.<br>
-			The AR version relies on the use of the Hiro marker (<a href="../assets/marker/hiro.png" target="_blank">here</a>) to place a water-tap in the AR view.<br>
+			The AR version relies on the use of the Hiro marker (<a href="../assets/marker/hiro.png" target="_blank">here</a>) to control a water-tap in the AR view.<br>
 			Every time a virus particle comes in contact with the water-tap, it is killed off. <br>
 			The virus particles will periodically replicate.<br>
 			To win, kill off all the particles before their number reaches a critical mass.
@@ -149,32 +174,7 @@
 			<em>Hint</em>: In certain situations, its best to refresh the page after changing orientation.
 		</span>
 	</div>
-	<div id="wrapVRCoV" class="wrap3">
-		<span class="gameTitle">VRCoV</span>
-		<span class="gameIW"  style="text-align: center;">
-			<a href="./vrcov.html" class="noDecor">
-				<img class="gameImg" src="../assets/gifs/vrcov.gif"></img><br>
-				<strong>Play!</strong>
-			</a>
-		</span>
-		<span class="gameTextI">
-			VRCoV is an Virtual Reality Game with a gaze-driven whack-a-mole mechanic.<br> 
-			Again the idea links the use of a running water-tap with the destruction of the virus.<br>
-			Move the smartphone to look around. <br>
-			Hold gaze-reticle on virus particle till it gets killed off.<br>
-			The virus particles will periodically replicate.<br>
-			To win, kill off all the particles before their number reaches a critical mass.
-		</span>
-		<span class="gameTextS">
-			&#9210; Use landscape orientation to play<br>
-			&#9210; If Google-Cardboard type harness is available, use the "VR" button to enter stereoscopic mode<br>
-			&#9210; Move gaze-reticle to where virus particle appears and hold gaze to kill it<br>
-		</span>
-		<span class="gameTextR"> 
-			<em>Requirements</em>: WebGL-enabled smartphone and browser (certain Apple versions and older smartphones may not work).<br>
-			<em>Extras</em>: Google Cardboard Harness
-		</span>
-	</div>
+
 </div>
 <div id="wrapDisclaimer" class="wrap">
 	<span class="gameTitle">Disclaimer</span>
